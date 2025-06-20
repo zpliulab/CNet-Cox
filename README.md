@@ -5,7 +5,7 @@
 
 ## CNet-Cox
 <!--START_SECTION:news-->
-* A **connected network-regularized Cox roportional hazards model model** is proposed to perform **feature selection**. 
+* A **connected network-regularized Cox roportional hazards model** is proposed to perform **feature selection**. 
 * In real-world **breast cancer (BRCA) dataset**, we validated the CNet-Cox model is efficient to identify the **connected-network-structured features** that can serve as **prognostic biomarkers**.
 * In the comparison study, we also proved the proposed **CNet-Cox** results in better classification performance and feature interpretability than other seven method named **ENet-Cox**, **Lasso-Cox**, **L0-SVM**, **L1/2-Cox**, **SCAD-Cox**, **MCP-Cox** and **Ridge-Cox**.
 * If you have any questions about **CNet-Cox**, please directly contact the corresponding author [Prof. Zhi-Ping Liu](https://scholar.google.com/citations?user=zkBXb_kAAAAJ&hl=zh-CN&oi=ao) with the E-mail: zpliu@sdu.edu.cn
