@@ -1,0 +1,6 @@
+Network,Annotation
+MyList,hsa05224|Breast cancer|-45.9;WP4262|Breast cancer pathway|-45.2;hsa05200|Pathways in cancer|-35.3
+MyList_MCODE_ALL,hsa05224|Breast cancer|-26.8;WP4262|Breast cancer pathway|-26.4;R-HSA-8939211|ESR-mediated signaling|-24.1
+MyList_SUB1_MCODE_1,hsa05224|Breast cancer|-18.6;WP4262|Breast cancer pathway|-18.4;hsa05200|Pathways in cancer|-18.3
+MyList_SUB1_MCODE_2,M127|PID ERBB1 RECEPTOR PROXIMAL PATHWAY|-14.8;hsa05213|Endometrial cancer|-13.7;WP4155|Endometrial cancer|-13.5
+MyList_SUB1_MCODE_3,R-HSA-6807505|RNA polymerase II transcribes snRNA genes|-7.8

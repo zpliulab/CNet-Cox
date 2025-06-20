@@ -1,0 +1,5 @@
+Network,Annotation
+MyList,hsa05224|Breast cancer|-30.5;WP4262|Breast cancer pathway|-27.9;hsa05200|Pathways in cancer|-24.4
+MyList_MCODE_ALL,hsa05224|Breast cancer|-25.3;hsa05200|Pathways in cancer|-23.5;WP4262|Breast cancer pathway|-22.2
+MyList_SUB1_MCODE_1,hsa05217|Basal cell carcinoma|-20.7;hsa04310|Wnt signaling pathway|-20.3;WP4336|ncRNAs involved in Wnt signaling in hepatocellular carcinoma|-19.4
+MyList_SUB1_MCODE_2,hsa05200|Pathways in cancer|-10.5;R-HSA-9009391|Extra-nuclear estrogen signaling|-9.2;hsa05224|Breast cancer|-8.1

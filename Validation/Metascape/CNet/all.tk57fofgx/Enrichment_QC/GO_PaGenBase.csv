@@ -1,0 +1,4 @@
+_MEMBER_MyList,_LogP_MyList,GO,_PATTERN_,_RANK_,GiniIndex,Category,CategoryID,Description,PARENT_GO,LogP,Enrichment,Z-score,#TotalGeneInLibrary,#GeneInGO,#GeneInHitList,#GeneInGOAndHitList,%InGO,STDV %InGO,GeneID,Hits,Log(q-value),EvidenceCutoff
+1,-5.2,PGB:00045,M1,1,0,PaGenBase,36,Tissue-specific: placenta,,-5.2,10,7.7,30182,304,68,7,10,3.7,1956|2551|2624|6654|7022|23764|29126,EGFR|GABPA|GATA2|SOS1|TFAP2C|MAFF|CD274,-3.5,0
+1,-4.1,PGB:00121,M1,1,0,PaGenBase,36,Cell-specific: CD34+,,-4.1,37,10,30182,36,68,3,4.4,2.5,2624|3815|8842,GATA2|KIT|PROM1,-2.6,0
+1,-2.3,PGB:00018,M1,1,0,PaGenBase,36,Tissue-specific: lung,,-2.3,4.4,3.7,30182,499,68,5,7.4,3.2,3725|3815|6654|6667|29126,JUN|KIT|SOS1|SP1|CD274,-0.95,0

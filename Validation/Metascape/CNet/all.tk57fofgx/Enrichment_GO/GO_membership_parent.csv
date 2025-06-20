@@ -1,0 +1,20 @@
+_MEMBER_MyList,_LogP_MyList,GO,Description,_PATTERN_,_RANK_,CHILD_GO_MyList
+1,-14.553722454019443,GO:0008152,metabolic process,M1,1,GO:2000628 regulation of miRNA metabolic process
+1,-13.934038253494359,GO:0048518,positive regulation of biological process,M1,1,GO:2000630 positive regulation of miRNA metabolic process
+1,-13.29214245552098,GO:0050896,response to stimulus,M1,1,GO:1901699 cellular response to nitrogen compound
+1,-11.202998765535794,GO:0032502,developmental process,M1,1,GO:0002521 leukocyte differentiation
+1,-11.113184572888231,GO:0023052,signaling,M1,1,GO:0007167 enzyme-linked receptor protein signaling pathway
+1,-10.528509150241957,GO:0040011,locomotion,M1,1,GO:0030335 positive regulation of cell migration
+1,-10.440014350436819,GO:0009987,cellular process,M1,1,GO:0008283 cell population proliferation
+1,-8.655619904499556,GO:0002376,immune system process,M1,1,GO:1903706 regulation of hemopoiesis
+1,-8.612268661741387,GO:0050789,regulation of biological process,M1,1,GO:0050678 regulation of epithelial cell proliferation
+1,-7.276074335102486,GO:0032501,multicellular organismal process,M1,1,GO:0001775 cell activation
+1,-7.260872109220045,GO:0016032,viral process,M1,1,GO:0043923 positive regulation by host of viral transcription
+1,-6.760318319164964,GO:0048519,negative regulation of biological process,M1,1,GO:0008285 negative regulation of cell population proliferation
+1,-6.58469209819374,GO:0065007,biological regulation,M1,1,GO:0051347 positive regulation of transferase activity
+1,-6.313094698816297,GO:0042592,homeostatic process,M1,1,GO:0048871 multicellular organismal homeostasis
+1,-6.127645974969984,GO:0051179,localization,M1,1,GO:0033157 regulation of intracellular protein transport
+1,-4.421767270293253,GO:0044419,biological process involved in interspecies interaction between organisms,M1,1,GO:0051851 modulation by host of symbiont process
+1,-3.5781689842867426,GO:0048511,rhythmic process,M1,1,GO:0007623 circadian rhythm
+1,-3.0265778854195213,GO:0022414,reproductive process,M1,1,GO:0044703 multi-organism reproductive process
+1,-2.7955287298713793,GO:0040007,growth,M1,1,GO:0046620 regulation of organ growth
