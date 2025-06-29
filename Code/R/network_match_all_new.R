@@ -1,25 +1,22 @@
-## 2021.9.26 将每种方法的feature gene输进去，得到pathway gene数对 network
-
-
 rm(list=ls())
 
-library(dplyr)       # ％>％ 管道函数的调用，传参
+library(dplyr)        
 library(tidyr)
-library(tidyverse)   # tibble 的调用
+library(tidyverse)    
 library(igraph)
 
 
-setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\RTCGA')
+setwd('D:\\E\\锟斤拷士\\R_锟斤拷锟斤拷\\SVM\\Data\\RTCGA')
 net <- as.matrix(read.csv("allgene_comp_net.csv",header = T))
 net[1,]
 
 
 
-setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\RTCGA\\result\\featurenew')
+setwd('D:\\E\\锟斤拷士\\R_锟斤拷锟斤拷\\SVM\\Data\\RTCGA\\result\\featurenew')
 
-myfile = list.files("CsvdataFeatureSeleOnce")                #list.files命令将input文件夹下所有文件名输入a
-dir = paste("./CsvdataFeatureSeleOnce/", myfile, sep="")     #用paste命令构建路径变量dir
-n = length(dir)                                  #读取dir长度，也就是文件夹下的文件个数
+myfile = list.files("CsvdataFeatureSeleOnce")                 
+dir = paste("./CsvdataFeatureSeleOnce/", myfile, sep="")      
+n = length(dir)                                   
 
 
 mynet <- function(i){
@@ -36,7 +33,7 @@ mynet <- function(i){
   if (length(used) == 0){break;}
   
   PP <- graph_from_data_frame(used,directed = F)
-  p1 <- simplify(PP)  # 最终的数对
+  p1 <- simplify(PP)   
   ed <- as_edgelist(p1, names = TRUE)
   # union(ed[,1],ed[,2])
   # setdiff(as.character(node), union(ed[,1],ed[,2]))
@@ -56,21 +53,7 @@ mynet(8)
 dir[i]
 
 
-
-
-
-
-# 110 gene 的归属 ------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-# 无法跳出循环后，执行下一个 -----------------------------------------------------------
+## -----------------------------------------------------------
 
 for (i in 1:n) {
   # i <- 2
@@ -89,7 +72,7 @@ for (i in 1:n) {
   }
   
   PP <- graph_from_data_frame(used,directed = F)
-  p1 <- simplify(PP)  # 最终的数对
+  p1 <- simplify(PP)   
   ed <- as_edgelist(p1, names = TRUE)
   
   name <- dir[i]

@@ -167,9 +167,8 @@ separate2GroupsCox <- function(chosen.btas, xdata, ydata,
     return(list(pvalue = p_value, plot = NULL, km = km))
   }
   
-  #
+
   # Plot survival curve
-  #
   # remove group= from legend
   names(km$strata) <- gsub('group=','',names(km$strata))
   # if there are more than 1 btas then lines should have transparency
@@ -192,8 +191,8 @@ separate2GroupsCox <- function(chosen.btas, xdata, ydata,
                               palette = col.ix,
                               data = prognostic.index.df,
                               ggtheme = ggplot2::theme_bw(),
-                              surv.median.line = "hv",  # 自己加
-                              risk.table = TRUE, #  自己加
+                              surv.median.line = "hv",   
+                              risk.table = TRUE,  
                               ...)
   
   if (expand.yzero)

@@ -2,9 +2,7 @@
 rm(list = ls())
 
 # load R packages --------------------------------------------------------------------
-
 # install.packages("glmnet")
-
 library(glmSparseNet)
 library(curatedTCGAData)
 library(TCGAutils)
@@ -16,8 +14,6 @@ path <- '/Users/lilingyu/E/PhD/R/'
 # path <- '/home/lly/R/'
 setwd(paste(path, 'CNetCox/Data/TCGA_NEW', sep=''))
 
-
-## ????????ģ?͹???????Ҫ???????Ǵ???????????Ʒ???????????϶?Ӧ?????????˵???????Ϣ
 
 # params <- list(seed = 29221)  
 
@@ -36,9 +32,9 @@ ydata.raw <- colData(brca.primary.solid.tumor) %>% as.data.frame %>%
   select(patientID, vital_status, gender,
          Days.to.date.of.Death, Days.to.Date.of.Last.Contact,
          days_to_death,         days_to_last_followup,
-         Vital.Status,    # ???????Ժ????Լ????ϵ?clinָ??
+         Vital.Status,     
          years_to_birth, pathologic_stage, pathology_T_stage, pathology_N_stage, pathology_M_stage) %>%
-  # Convert days to integer (??��???ּ???˫????)
+  # Convert days to integer  
   mutate(Days.to.date.of.Death = as.integer(Days.to.date.of.Death)) %>%
   mutate(Days.to.Last.Contact  = as.integer(Days.to.Date.of.Last.Contact)) %>%
   # Find max time between all days (ignoring missings)
@@ -46,7 +42,7 @@ ydata.raw <- colData(brca.primary.solid.tumor) %>% as.data.frame %>%
   mutate(time = max(days_to_last_followup,        Days.to.date.of.Death,
                     Days.to.Last.Contact, days_to_death, na.rm = TRUE)) %>%
   # Keep only survival variables and codes
-  select(patientID, status = vital_status, time,   gender,  # ???????Ժ????Լ????ϵ?clinָ??
+  select(patientID, status = vital_status, time,   gender,   
          years_to_birth, pathologic_stage, pathology_T_stage, pathology_N_stage, pathology_M_stage) %>%
   # Discard individuals with survival time less or equal to 0
   filter(!is.na(time) & time > 0) %>% as.data.frame
@@ -96,7 +92,7 @@ clin <- read.csv("TCGA_clin_information_gender.csv", header = T)
 # View(clin)
 
 
-######################### ???漸???ļ???????Sanger box ####################################
+######################### Sanger box ####################################
 
 # clin_age <- clin[,c(3,2,4)]
 # # write.csv(clin_age, file = "result\\Sanger_age_TCGA.csv", row.names = F)
@@ -180,9 +176,9 @@ clin[which(clin[,kt] == "tx"), kt] <- c(0)
 
 
 # pathology_N_stage
-## N0表示淋巴结未受影响，N1-N3依次表示淋巴结受影响程度和范围的增加，
+## N0 means that the lymph nodes are not affected, and N1-N3 indicate the increasing degree and range of affected lymph nodes.
 kn <- 8
-## Nx表示淋巴结受影响状况无法评估。
+## Nx means the lymph nodes cannot be evaluated.
 clin[!duplicated(clin[,kn]),kn]
 clin[which(clin[,kn] == "n0"), kn] <- c(0)   
 clin[which(clin[,kn] == "n0 (i-)"), kn] <- c(0) 
@@ -203,7 +199,7 @@ clin[which(clin[,kn] == "nx"), kn] <- c(0)
 
 
 # pathology_M_stage
-## M0表示没有转移，M1表示有远处转移。
+## M0 means no metastasis, and M1 means distant metastasis.
 kk <- 9
 clin[!duplicated(clin[,kk]),kk]
 clin[which(clin[,kk] == "m0"), kk] <- c(0)
@@ -257,16 +253,12 @@ library(rms)
 dd <- datadist(clin_n)
 options(datadist="dd")
 
-# ??��COX?ع鷽??
 f <- cph(Surv(time, status) ~ PRS+Gender+Age+Pathologic.stage+Pathology.T.stage+Pathology.N.stage+Pathology.M.stage,
          x=T, y=T, surv=T, data=clin_n, time.inc=365)
 clin_n$Pathology.T.stage
-
-# ??COX?ع鷽?̽??н???
 summary(f)
 
 
-# ????????ͼ
 surv <- Survival(f)
 nom <- nomogram(f, fun=list(function(x) surv(365, x), 
                             function(x) surv(1095, x),   # 36-3year, 60-5year
@@ -308,10 +300,10 @@ s <- Surv(clin_n$time, clin_n$status, type="right")
 f <- cph(s~PRS+Gender+Age+Pathologic.stage+Pathology.T.stage+Pathology.N.stage+Pathology.M.stage, 
          x=TRUE, y=TRUE, surv = TRUE, time.inc=365, data=clin_n)
 
-cal <- calibrate(f,u=365,cmethod='KM',m=180)  #??????uӦ??time.inc????һ??  216
+cal <- calibrate(f,u=365,cmethod='KM',m=180)   
 
 # pdf(file = "calibration_1_NEW.pdf",width = 4.5,height = 5.0)
-plot(cal, xlim = c(0.88,1), ylim= c(0.88,1),  #xlim??ylim?޶?x??y???????䣬???Ե???
+plot(cal, xlim = c(0.88,1), ylim= c(0.88,1),   
      errbar.col=c(rgb(0,0,0,maxColorValue=255)),
      col=c(rgb(255,0,0,maxColorValue=255)))
 abline(0,1,lty=3,lwd=2,col=c(rgb(0,0,255,maxColorValue= 255)))
@@ -322,10 +314,10 @@ abline(0,1,lty=3,lwd=2,col=c(rgb(0,0,255,maxColorValue= 255)))
 f <- cph(s~PRS+Gender+Age+Pathologic.stage+Pathology.T.stage+Pathology.N.stage+Pathology.M.stage, 
          x=TRUE, y=TRUE, surv = TRUE, time.inc=1095, data=clin_n)
 
-cal <- calibrate(f,u=1095,cmethod='KM',m=180)  #??????uӦ??time.inc????һ??  216
+cal <- calibrate(f,u=1095,cmethod='KM',m=180)   
 
 # pdf(file = "calibration_3_NEW.pdf",width = 4.5,height = 5.0)
-plot(cal, xlim = c(0.68,1), ylim= c(0.68,1),  #xlim??ylim?޶?x??y???????䣬???Ե???
+plot(cal, xlim = c(0.68,1), ylim= c(0.68,1),   
      errbar.col=c(rgb(0,0,0,maxColorValue=255)),
      col=c(rgb(255,0,0,maxColorValue=255)))
 abline(0,1,lty=3,lwd=2,col=c(rgb(0,0,255,maxColorValue= 255)))
@@ -339,7 +331,7 @@ f <- cph(s~PRS+Gender+Age+Pathologic.stage+Pathology.T.stage+Pathology.N.stage+P
 cal <- calibrate(f,u=1825,cmethod='KM',m=180)  #??????uӦ??time.inc????һ??  216
 
 # pdf(file = "calibration_5_NEW.pdf",width = 4.5,height = 5.0)
-plot(cal, xlim = c(0.46,1), ylim= c(0.46,1),  #xlim??ylim?޶?x??y???????䣬???Ե???
+plot(cal, xlim = c(0.46,1), ylim= c(0.46,1),   
      errbar.col=c(rgb(0,0,0,maxColorValue=255)),
      col=c(rgb(255,0,0,maxColorValue=255)))
 abline(0,1,lty=3,lwd=2,col=c(rgb(0,0,255,maxColorValue= 255))) 

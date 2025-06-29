@@ -118,6 +118,7 @@ g <- markerPlot(markerinput, net)[[1]]
 markerNet <- markerPlot(markerinput, net)[[2]]
 # write.csv(markerNet, "Result/Result3/markerNet3.csv", row.names = F, quote = F)
 
+
 # load test data and calculus the CI value --------------------------------
 # filenum <- "1"
 # readtestdata <- function(filenum){
@@ -152,8 +153,6 @@ plotp$pvalue
 # p
 
 
-
-
 xtile3 <- as.matrix(cbind(y1, as.matrix(x1_hat[, coef_test[[2]]]) %*% as.matrix(coef_test[[1]])))
 colnames(xtile3) <- c("time","status", "riskscore")
 # write.table(xtile3, paste(path, "CNetCox/Data/Result/Result3/xtile3.txt", sep = ""),
@@ -175,31 +174,31 @@ fit <- survfit(Surv(time, status)~riskscore, data = data)
 library(survminer)
 library(survival)
 p <- ggsurvplot(fit, data = data, 
-                conf.int = F, # ????????????
-                # surv.median.line = "hv",  # ??????λ????ʱ??
-                risk.table = TRUE, # ?????ۼƷ???????
-                tables.height= 0.25, # ????Ϊ????��?????????ĸ߶?
-                cumcensor = T,    # ?????ۻ?ɾʧ??
-                legend = c(0.83,0.95), # ָ??ͼ??λ??
+                conf.int = F,  
+                # surv.median.line = "hv",  
+                risk.table = TRUE,  
+                tables.height= 0.25,  
+                cumcensor = T,     
+                legend = c(0.83,0.95), 
                 
                 # P value
                 pval = TRUE, 
                 pval.size=6, 
                 font.pval= c(14, "bold", "black"),
-                pval.coord = c(0.00, 0.05), #????Pval??λ??
+                pval.coord = c(0.00, 0.05),  
                 
                 # legend
-                # legend.title = '', # gene_name
-                # legend.labs=c("High risk", "Low risk"), #??ǩ
-                # font.legend= c(14, "plain", "black"),  # ͼ??????
+                # legend.title = '', 
+                # legend.labs=c("High risk", "Low risk"), 
+                # font.legend= c(14, "plain", "black"),   
                 # # font.main = c(100, "bold", "black"),
                 # # xlim = c(0,72), # present narrower X axis, but not affect
                 # # survival estimates.
                 # palette=c("red", "blue"),
                 # font.x = c(14, "plain", "black"),
-                # font.y = c(14, "plain", "black"), # x?ᡢy??????
-                # font.tickslab = c(14, "plain", "black"), # ?̶ȱ?ǩ????
-                # xlab = "Time in years", # customize X axis label. year
+                # font.y = c(14, "plain", "black"),  
+                # font.tickslab = c(14, "plain", "black"),  
+                # xlab = "Time in years",  
                 # break.time.by = 2
 ) # break X axis in time intervals by 500.
 
@@ -380,7 +379,7 @@ p4 <- ggplot(data = markerP, aes(x = P, y = Gene)) +
   geom_col(aes(fill = P > 0), color = "gray") +
   scale_fill_manual(values = c("#d5d9e0", "#a4afd5")) +
   # scale_x_continuous(limits = c(-0.2, 0.3), expand = c(0, 0)) +
-  # x轴与y轴互换位置
+  ## The x-axis and y-axis swap positions
   # coord_flip()+
   # theme_classic() +
   theme_minimal() +
@@ -428,28 +427,24 @@ df <- markerFC
 # df <- melt(df)   
 
 p<- ggplot(df, aes(
-  # 将第一列转化为因子，目的是显示顺序与文件顺序相同，否则按照字母顺序排序
+  ## Convert first column to a factor so that the display order is the same as the file order, otherwise sort in alphabetical order
   x = factor(Gene,levels = unique(Gene)),   
-  # 判断分组情况，将两个柱子画在0的两侧
+  ## Determine the grouping situation and draw two columns on both sides of 0
   y = ifelse(variable == "variable", -value, value),  
   fill = variable)) +
-  # 画柱形图
+  ## Draw a column chart
   geom_bar(stat = 'identity')+   
-  # x轴与y轴互换位置
+  ## The x-axis and y-axis swap positions
   coord_flip()+
-  # 在图形上加上数字标签
+  ## Add numeric labels to graphs
   geom_text(                                                  
     aes(label=value, 
-        # 标签的值（数据框的第三列）
-        # 垂直位置。如果没有coord_flip()，则可以取消这行注释
-        # vjust = ifelse(variable == "Up", -0.5, 1), 
-        # 水平位置 and # 标签大小
         hjust = ifelse(variable == "variable", -0.4, 1.1)),size=2) +
-  # 调整y轴    # 刻度设置为绝对值
+  ## Adjust the y-axis，set the scale to absolute values
   # scale_y_continuous(labels = abs, expand = expansion(mult = c(0.1, 0.1)))+                
   scale_fill_manual(values = c('#fec79e','#8ec4cb'))+
   labs(x='Gene',y='Log2FC') +
-  # 在y轴的两侧，留下一部分的空白位置，防止加标签的时候，显示不全
+  ## Leave some blank space on both sides of the y-axis to prevent incomplete display when adding labels
   theme_test(base_size = 10) 
 
 p
@@ -602,8 +597,6 @@ p1
 # dev.off()
 
 
-
-
 # Extract PRS gene expression and PRS value -------------------------------
 
 library(dplyr)        
@@ -637,9 +630,9 @@ genedata2 <- rbind(Data1[c(1,2),],genedata1)    # 55
 
 # Extract PRS gene expression of P/M GSE147995 data-------------------------------
 
-library(dplyr)       # ??>?? ?ܵ��????ĵ??ã?????
+library(dplyr)       
 library(tidyr)
-library(tidyverse)   # tibble ?ĵ???
+library(tidyverse)   
 
 Data1 = read.csv("DrugData/GSE147995_vst.csv", header = T, row.names= 1, check.names = FALSE, sep = ",")
 # View(Data1[,1:10])
@@ -700,11 +693,11 @@ colnames(td) <- c("id", colnames(data1)[-3], colnames(data1)[3])
 # td <- datat[,c(2,1,3,4,5,6,7,8)]
 
 ## plot one gene as one time point
-# par(mar= c(5,5,1,1),cex.lab=1.2,cex.axis= 1.2) #先设置一下图形的边界
-# sROC <- survivalROC(Stime=td$time, # 生存时间
-#                  status=td$status, # 生存状态
-#                  marker = td$EGR1, #选择gene87
-#                  predict.time =5, # 看5年的时间段
+# par(mar= c(5,5,1,1),cex.lab=1.2,cex.axis= 1.2)  
+# sROC <- survivalROC(Stime=td$time,  
+#                  status=td$status,  
+#                  marker = td$EGR1,  
+#                  predict.time =5,  
 #                  method="KM")
 # sROC
 # plot(sROC$FP, sROC$TP, type="l", xlim=c(0,1), ylim=c(0,1),col="red", 
@@ -723,43 +716,25 @@ library(survival)
 tRocFuction=function(td=null,gene=null){
   tROC <-timeROC(T=td$time, delta = td$status, marker = gene,
                  cause = 1,times = c(1,3,5),ROC=T)
-  par(mar= c(4.5,4.5,1,1), cex.lab=1.5, cex.axis= 1.2) #cex.lab=2横纵坐标的label变大，cex.axis=1.5坐标刻度数字变大
-  plot(tROC,time=1,col="red",title=F, lwd=3) # lwd 线的粗线
+  par(mar= c(4.5,4.5,1,1), cex.lab=1.5, cex.axis= 1.2)  
+  plot(tROC,time=1,col="red",title=F, lwd=3)  
   plot(tROC,time=3,col="green",add=T,title=F,lwd=3)
   plot(tROC,time=5,col="blue",add=T,title=F,lwd=3)
-  legend(0.3,0.6, # 改变legend坐标位置
+  legend(0.3,0.6,     # Change the legend coordinate position
          # c(paste0("AUC at 1 years  ", round(tROC$AUC[1], 2)),
          #   paste0("AUC at 3 years  ", round(tROC$AUC[2], 2)),
          #   paste0("AUC at 5 years  ", round(tROC$AUC[3], 2))),
          c(paste0("AUC", round(tROC$AUC[1], 2)),
            paste0("AUC", round(tROC$AUC[2], 2)),
            paste0("AUC", round(tROC$AUC[3], 2))),
-         col=c("red","green","blue"), lwd=2, cex=1.2, bty="n") # 改变legend粗细及大小 lwd=2,cex=1.5
+         col=c("red","green","blue"), lwd=2, cex=1.2, bty="n")  
 }
-
-# tRocFuction=function(td=null,gene=null){
-#   tROC <-timeROC(T=td$time, delta = td$status,
-#                  # marker = td$EGR1,
-#                  marker = gene,
-#                  cause = 1,times = c(1,3,5), ROC=T)
-#   # par(mar= c(4.5,4.5,1,1), cex.lab=1.5, cex.axis= 1.2) #cex.lab=2横纵坐标的label变大，cex.axis=1.5坐标刻度数字变大
-#   P <- plot(tROC,time=1,col="red",title=F, lwd=3) + # lwd 线的粗线
-#        plot(tROC,time=3,col="green",add=T,title=F,lwd=3) + 
-#        plot(tROC,time=5,col="blue",add=T,title=F,lwd=3) +
-#        legend(0.3,0.3, # 改变legend坐标位置
-#                c(paste0("AUC at 1 years  ", round(tROC$AUC[1], 2)),
-#                  paste0("AUC at 3 years  ", round(tROC$AUC[2], 2)),
-#                  paste0("AUC at 5 years  ", round(tROC$AUC[3], 2))),
-#                col=c("red","green","blue"), lwd=2, cex=1.2, bty="n")  # 改变legend粗细及大小 lwd=2,cex=1.5
-#   return(P)
-# }
-
 
 
 ## save plot
-# pdf(file="gene87.sROC.pdf",width=6,height=5) #开始打印PDF
-tRocFuction(td=td,gene=td$IGFBP5) #执行画图命令
-# dev.off() #关闭画板，输出图
+# pdf(file="gene87.sROC.pdf",width=6,height=5)  
+tRocFuction(td=td,gene=td$IGFBP5)  
+# dev.off()  
 
 
 ## save on a list
@@ -793,11 +768,11 @@ par(mfrow=c(1,1))
 rbCol=rainbow(6)
 
 
-mRocFuction=function(td=null,pt = null,of=null){ #td要使用的数据名，pt要看的时间段
+mRocFuction=function(td=null,pt = null,of=null){  
   rbCol=rainbow(6)
   par(mar= c(4.5, 4.5, 1,1),cex.lab=1.2,cex.axis= 1.2)
   sROC=survivalROC(Stime=td$time, status = td$status, marker = td$EGR1,
-                   predict.time = pt, #时间改为pt，方便改要看的时间段
+                   predict.time = pt,  
                    method="KM")
   plot(sROC$FP, sROC$TP, type="l", xlim=c(0,1), ylim=c(0,1),col=rbCol[1], 
        xlab="False positive rate", ylab="True positive rate",
@@ -811,13 +786,13 @@ mRocFuction=function(td=null,pt = null,of=null){ #td要使用的数据名，pt�
     lines(sROC$FP, sROC$TP, type="l", xlim=c(0,1), ylim=c(0,1),col = rbCol[j],lwd = 2)
     aucText=c(aucText,paste0(i," (AUC=",sprintf("%.3f",sROC$AUC),")"))
   }
-  legend("bottomright", aucText,lwd=2,bty="n",cex = 1.2,col=rbCol) # cex改为1.2倍字体
-  legend("topleft", paste(pt,"Years"),bty="n",cex = 1.8) # 加了一个时间点的legend
+  legend("bottomright", aucText,lwd=2,bty="n",cex = 1.2,col=rbCol)  
+  legend("topleft", paste(pt,"Years"),bty="n",cex = 1.8)  
   
 }
 
 
-#后一个td改为要看的数据名,pt为要看的时间段，3年
+## #The last td is changed to the data name to be viewed, pt is the time period to be viewed, 3 years
 mRocFuction(td=td, pt=3, of=c("IGFBP5","JUN","MAFK","MYC","TCF7")) 
 
 
@@ -827,6 +802,3 @@ mRocFuction(td=td, pt=1, of=c("IGFBP5","JUN","MAFK","MYC","TCF7"))
 mRocFuction(td=td, pt=3, of=c("IGFBP5","JUN","MAFK","MYC","TCF7")) 
 mRocFuction(td=td, pt=5, of=c("IGFBP5","JUN","MAFK","MYC","TCF7")) 
 par(mfrow=c(1,1))
-
-
-

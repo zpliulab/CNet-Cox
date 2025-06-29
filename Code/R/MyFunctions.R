@@ -2,9 +2,7 @@
 ## Some functions used in CI and P values of methods
 
 
-
 # load coefficient --------------------------------------------------------
-
 markerselect <- function(filenum,cutoff){
   
   # filenum <- 1
@@ -46,7 +44,6 @@ markerselect <- function(filenum,cutoff){
 
 
 # load coefficient --------------------------------------------------------
-
 markerunion <- function(filenum){
 
   # filenum <- 1
@@ -92,7 +89,6 @@ markerunion <- function(filenum){
   
   return(list(marker,coefno1))
 }
-
 
 
 # Plot the selected markers -----------------------------------------------

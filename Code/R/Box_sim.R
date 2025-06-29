@@ -1,10 +1,8 @@
-
+## 2023.5.12 make ss-measure for CNet-RCPH 68 markers
 
 # if (!requireNamespace("BiocManager", quietly = TRUE))
 #   install.packages("BiocManager")
 # BiocManager::install("GOSemSim")
-
-## 2023.5.12 make ss-measure for CNet-RCPH 68 markers
 
 
 ## clear
@@ -14,13 +12,8 @@ rm(list = ls())
 path <- '/Users/lilingyu/E/PhD/'
 # path <- '/home/lly/R/'
 
-# Creat Files ------------------------------------------------------------------
-# setwd(paste(path, 'CNetCox/Data/', sep=''))
-
-
 library(GOSim)
 library(GOSemSim)
-
 
 setOntology(ont = "BP", loadIC=TRUE, DIR=NULL)
 H <-getAncestors()
@@ -36,7 +29,7 @@ b <- read.csv("GO_AllLists.csv",header = T, sep = ",")
 b1 <- as.matrix(b[which(b$Category == "GO Biological Processes"),3])
 
 a <- b1[1:23,]
-## ??ѡ23??go
+## go
 # a <- b[c(1,2,3,12,13,14,15,17,19,20,22,23,24,25,26,28,30,34,35,37,38,46,48),]
 # View(a)
 # write.csv(a, "cluster_GO_NEW_select23.csv", row.names = F)
@@ -53,8 +46,7 @@ amlsim <- as.matrix(mgoSim(a,aa,semData=d,measure = "Wang",combine=NULL))
 # write.csv(amlsim,"TCGA\\687_37\\result\\consimi.csv", row.names = F)
 
 
-
-# ?ҵ? go terms --------------------------------------------------------------------
+# go terms --------------------------------------------------------------------
 
 library(corrplot)
 corrplot(amlsim)  #[c(1:10),]
@@ -74,7 +66,6 @@ congoterm1hou <-as.matrix(congoterm1)
 
 dasimrmean <-mean(dasimr)
 dasimcmean <-mean(dasimc)
-
 
 
 # selected go terms -------------------------------------------------------------
@@ -194,38 +185,3 @@ ggplot(boxdata1, aes(x = Type, y = SSmeasure, fill = Type)) +
 # pdf(file = "TCGA_NEW\\result\\box_sim_cluster_NEW.pdf",width = 4.5,height = 4.5)
 # p
 # dev.off()
-
-# ??ѡcluster GO ---------------------------------------------------------------
-
-pr <- 0.7
-which(dasimr[,1] >= pr)
-
-setwd("D:\\E\\??ʿ\\DR_paper\\Paper4\\coxͼ?ͱ?\\???ܷ???")
-bb0 <- as.matrix(read.csv("cluster_GO_NEW.csv",header = T)[,c(1,2)]) 
-aa0 <- as.matrix(bb0[c(1,2,3,12,13,14,15,17,19,20,22,23,24,25,26,28,30,34,35,37,38,46,48),])
-aa
-
-goselect <- aa0[which(dasimr[,1] >= pr),]
-goselect[,2]
-# write.csv(goselect, "go_6_select_NEW.csv", row.names = F)
-
-
-
-# ??ѡGO term ---------------------------------------------------------------
-
-which(dasimr[,1] >= pr)
-go <- as.matrix(read.csv("TCGA\\687_37\\result\\chart_96AD.csv",header = T)[-c(10,13,25),])
-
-library(tidyverse)
-goterm <- str_split_fixed(go[,2], "[~]", 22)
-
-goterm1 <- as.matrix(cbind(goterm[,1], goterm[,2], go[,c(3,5,6)]))
-colnames(goterm1) <- c("Term", "Describe", colnames(go)[c(3,5,6)])
-
-goselect <- goterm1[which(dasimr[,1] >= pr),c(1,2)]
-goselect[,2]
-
-
-library(stargazer)
-stargazer(goselect, summary=FALSE, rownames=FALSE) #????stargazer????
-# write.csv(goselect, "TCGA\\687_37\\result\\chart_5goselect.csv", row.names = F)

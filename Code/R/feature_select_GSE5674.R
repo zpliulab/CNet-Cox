@@ -4,9 +4,6 @@ rm(list = ls())
 path <- '/Users/lilingyu/E/PhD/R/'
 # path <- '/home/lly/R/'
 
-# setwd(paste(path, 'CNetCox/Result/ComMethd', sep=''))
-
-
 ## data set
 # GSE42568  GSE5764  
 
@@ -19,20 +16,14 @@ library(tidyr)
 library(tidyverse)    
 
 # load data ---------------------------------------------------------------
-# Data1 = read.table("GSE5764_outcome_scale_IDC.txt", header = T, check.names = FALSE)
-
+# Data1 = read.table("GSE5764_outcome_scale_IDC.txt", header = T, check.names = FA
 Data1 = read.table("GSE5764_outcome_scale_all.txt", header = T, check.names = FALSE)
-
-
-# View(Data1[,1:10])
 dim(Data1)    # 21836   121
-
+# View(Data1[,1:10])
 
 setwd(paste(path, 'CNetCox/Data/', sep=''))
 coef_gene <- read.csv("TCGA_NEW/UniMutVariate_markergene.csv", header = T, sep=',')
 gene <- as.matrix(coef_gene[,1])
-
-
 colnames(gene) <- c('gene')
 Data2 <- cbind(rownames(Data1), Data1)
 colnames(Data2) <- c('gene', colnames(Data1))
@@ -44,18 +35,11 @@ genedata1 <- genedata %>% tibble::column_to_rownames(colnames(.)[1])
 genedata1[1,1]
 genedata1 <- apply(genedata1, 2, as.numeric)
 
-# ## ?????? -- ??Ч
-# genedata1 <- scale(genedata1)
-# rownames(genedata1) <- genedata[,1]
-# # View(genedata1[1:10,1:10])
-# genedata1[3,3]
-
 ## ?Ի???-- ??Ч
 genedata1 <-  t(scale(t(genedata1)))
 rownames(genedata1) <- genedata[,1]
 # View(genedata1[1:10,1:10])
 genedata1[3,3]
-
 
 genedata2 <- rbind(Data1[1,],genedata1)
 # View(genedata2[,1:10])

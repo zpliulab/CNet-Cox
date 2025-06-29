@@ -18,7 +18,6 @@ colnames(gene) <- c('gene')
 
 # R packages --------------------------------------------------------------------
 
-
 # if (!requireNamespace("BiocManager", quietly = TRUE))
 #   install.packages("BiocManager")
 # 
@@ -29,16 +28,13 @@ colnames(gene) <- c('gene')
 # BiocManager::install(version = "3.9")   #228???????°?װ
 # BiocManager::install("clusterProfiler")
 
-
 # install.packages("BiocInstaller",
 #                  repos="https://bioconductor.org/packages/3.8/bioc")
 # install.packages("BiocInstaller",
 #                  repos="http://bioconductor.org/packages/3.8/bioc")
 
-# 
 # if(!require(devtools)) install.packages("devtools")
 # devtools::install_github('GuangchuangYu/clusterProfiler')
-
 
 # if (!requireNamespace("BiocManager", quietly = TRUE))
 #   install.packages("BiocManager")
@@ -50,7 +46,7 @@ library(org.Hs.eg.db)
 library(clusterProfiler)
 
 
-# ????genes symbol ----------------------------------------------------------
+# genes symbol ----------------------------------------------------------
 
 genelist <- as.character(gene)
 eg <- bitr(genelist, fromType="SYMBOL", toType=c("ENTREZID","GENENAME"), OrgDb="org.Hs.eg.db"); 
@@ -60,7 +56,7 @@ head(eg)
 # go ----------------------------------------------------------------------
 
 geneList <- eg$ENTREZID
-## 17??gene,????У??
+## 17 gene 
 go_BP <- enrichGO(gene = geneList,
                   OrgDb = org.Hs.eg.db,
                   ont = "BP",
@@ -75,7 +71,7 @@ View(go_BP@result)
 setwd(paste(path, 'CNetCox/Result/cluster', sep=''))
 # write.csv(go_BP@result, file = "cluster_GO_cluster.csv", row.names = F)
 
-# ???м򵥵Ŀ??ӻ? ----------------------------------------------------------------
+# plot bar and plot pot  ----------------------------------------------------------------
 
 barplot(go_BP, y =go_BP@result$Description, showCategory=23,drop=T)    # showCategory=10,title="Enrichment GO"
 go_BP@result$Description

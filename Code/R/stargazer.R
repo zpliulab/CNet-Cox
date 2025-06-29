@@ -10,8 +10,6 @@ setwd(paste(path, 'CNetCox/', sep=''))
 
 
 # Real Data1 --------------------------------------------------------------
-
-
 # df <- readxl::read_excel("Pathologicstage.xlsx")   # , sheet="AUROC"
 df <- read.csv("Pathologicstage.csv", header = T, sep = ",")   # , sheet="AUROC"
 

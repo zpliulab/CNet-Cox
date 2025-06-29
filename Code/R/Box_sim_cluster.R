@@ -1,10 +1,8 @@
-
+## 2023.5.12 make ss-measure for CNet-RCPH 68 markers
 
 # if (!requireNamespace("BiocManager", quietly = TRUE))
 #   install.packages("BiocManager")
 # BiocManager::install("GOSemSim")
-
-## 2023.5.12 make ss-measure for CNet-RCPH 68 markers
 
 
 ## clear
@@ -14,13 +12,8 @@ rm(list = ls())
 path <- '/Users/lilingyu/E/PhD/'
 # path <- '/home/lly/R/'
 
-# Creat Files ------------------------------------------------------------------
-# setwd(paste(path, 'CNetCox/Data/', sep=''))
-
-
 library(GOSim)
 library(GOSemSim)
-
 
 setOntology(ont = "BP", loadIC=TRUE, DIR=NULL)
 H <-getAncestors()
@@ -36,14 +29,9 @@ set <- c(1,2,9:16, 19:23, 26,27, 29:31, 37, 43, 47)
 b <- as.matrix(read.csv("cluster_GO_cluster.csv",header = T, sep = ",")[set,1])
 
 a <- b
-## ??ѡ23??go
 # a <- b[c(1,2,3,12,13,14,15,17,19,20,22,23,24,25,26,28,30,34,35,37,38,46,48),]
 # View(a)
 # write.csv(a, "cluster_GO_NEW_select23.csv", row.names = F)
-
-# setwd("D:\\E\\??ʿ\\DR_paper\\Paper4\\coxͼ?ͱ?\\???ܷ???")
-# a <-as.matrix(read.csv("NOA.csv",header = T))
-
 
 setwd(paste(path, 'R/BRCA/Data', sep=''))
 aa <-as.matrix(read.csv("bc shishi.csv"))[,2]
@@ -53,11 +41,10 @@ amlsim <- as.matrix(mgoSim(a,aa,semData=d,measure = "Wang",combine=NULL))
 # write.csv(amlsim,"TCGA\\687_37\\result\\consimi.csv", row.names = F)
 
 
-
-# ?ҵ? go terms --------------------------------------------------------------------
+# Go terms --------------------------------------------------------------------
 
 library(corrplot)
-corrplot(amlsim)  #[c(1:10),]
+corrplot(amlsim) 
 
 dasimr <- as.matrix(apply(amlsim,1,max))
 dasimc <- as.matrix(apply(amlsim,2,max))
@@ -74,7 +61,6 @@ congoterm1hou <-as.matrix(congoterm1)
 
 dasimrmean <-mean(dasimr)
 dasimcmean <-mean(dasimc)
-
 
 
 # selected go terms -------------------------------------------------------------
@@ -106,7 +92,7 @@ for(i in set){
   randomterm1hou <- as.matrix(randomterm1)
   
   
-  # һ?µ?go term???????????? --------------------------------------------------------
+  # go term  --------------------------------------------------------
   
   boxdata <- data.frame(rbind(congoterm1hou,randomterm1hou))
   boxdata$sim <- as.numeric(as.vector(boxdata$sim))
@@ -115,9 +101,9 @@ for(i in set){
   randsimcmean <- mean(randsimc)
   
   
-  tcross <- rep(i, length(boxdata))                # i?ǵڼ???ѭ?????棬??K??
+  tcross <- rep(i, length(boxdata))                
   step <- data.frame(cbind(boxdata, tcross))
-  Boxdata <- cbind(Boxdata, step)                  #temp???к?pred?ϲ?
+  Boxdata <- cbind(Boxdata, step)                   
   
   
   # kcross <- rep(i, length(randsimrmean)) 
@@ -135,7 +121,7 @@ for(i in set){
 }
 
 
-# my_cbind ??ȡ20?ε?coef -----------------------------------------------------
+# my_cbind  -----------------------------------------------------
 
 my_cbind <- function(x){
   x <- Boxdata
@@ -159,7 +145,7 @@ boxdata1$SSmeasure <- as.numeric(as.vector(boxdata1$SSmeasure))
 class(boxdata[2,1])
 class(boxdata1[2,1])
 
-# ??????ͼ --------------------------------------------------------------------
+# Plot SS-measure plot --------------------------------------------------------------------
 library(ggpubr)
 library(ggplot2)
 
@@ -186,17 +172,17 @@ P1 <- ggplot(boxdata1, aes(x = Type, y = SSmeasure, fill = Type)) +
 
 P1
 
-# ???? ----------------------------------------------------------------------
+# Save figure ----------------------------------------------------------------------
 
 # pdf(file = "TCGA_NEW\\result\\box_sim_cluster_NEW.pdf",width = 4.5,height = 4.5)
 # p
 # dev.off()
 
-# ??ѡcluster GO ---------------------------------------------------------------
+
+# cluster GO ---------------------------------------------------------------
 
 pr <- 0.6
 which(dasimr[,1] >= pr)
-
 
 setwd(paste(path, 'R/CNetCox/Result/cluster/', sep=''))
 
@@ -208,10 +194,7 @@ goselect[,2]
 # write.csv(goselect, "go_6_select_NEW.csv", row.names = F)
 
 
-
-
 # functional enrichment analysis ------------------------------------------
-
 
 ## set pathway
 path <- '/Users/lilingyu/E/PhD/R/'
@@ -228,17 +211,14 @@ colnames(gene) <- c('gene')
 library(org.Hs.eg.db)
 library(clusterProfiler)
 
-
 # load genes symbol ----------------------------------------------------------
-
 genelist <- as.character(gene)
 eg <- bitr(genelist, fromType="SYMBOL", toType=c("ENTREZID","GENENAME"), OrgDb="org.Hs.eg.db"); 
 head(eg)
 
 # go ----------------------------------------------------------------------
-
 geneList <- eg$ENTREZID
-## 17??gene,????У??
+## 17 gene
 go_BP <- enrichGO(gene = geneList,
                   OrgDb = org.Hs.eg.db,
                   ont = "BP",
@@ -253,6 +233,7 @@ View(go_BP@result)
 # setwd(paste(path, 'CNetCox/Result/cluster', sep=''))
 # write.csv(go_BP@result, file = "cluster_GO_cluster.csv", row.names = F)
 
+
 # plot bar and plot pot  ----------------------------------------------------------------
 
 barplot(go_BP, y =go_BP@result$Description, showCategory=23,drop=T)    
@@ -263,16 +244,15 @@ dotplot(go_BP, font.size=12, showCategory=23,title="Enrichment GO Top 23") +
   scale_size(rang=c(5.20)) + 
   scale_y_discrete(labels=function(x) stringr::str_wrap(x, width=60))
 
-# 选择要显示的术语 ----------------------------------------------------------------
+# Select Go terms to show ----------------------------------------------------------------
 setwd('/Users/lilingyu/E/PhD/R/CNetCox/Result/cluster/')
 ## load go list
 set <- c(1,2,9:16, 19:23, 26,27, 29:31, 37, 43, 47)
 aa0 <- read.csv("cluster_GO_cluster.csv",header = T, sep = ",")[set,c(1,2)]
 selected_terms <- aa0$ID
 
-# 根据选定的术语对数据进行子集化
+## Subset the data based on the selected terms
 go_BPsub <- go_BP[go_BP@result$ID %in% selected_terms,]
-
 
 GO23 <- as.matrix(read.csv("cluster_GO_cluster.csv",header = T, sep = ",")[set,c(1,2,5,6)])
 dim(GO23)
@@ -286,7 +266,7 @@ df0 <- GO23
 stargazer(df0)
 stargazer(GO23p)
 
-# 然后自己计算Fold Enrichment，并按照Fold Enrichment升序排序
+## Then calculate Fold Enrichment yourself and sort in ascending order according to Fold Enrichment
 library(stringr)
 gr1 <- as.numeric(str_split(go_BPsub$GeneRatio,"/",simplify = T)[,1])
 gr2 <- as.numeric(str_split(go_BPsub$GeneRatio,"/",simplify = T)[,2])
@@ -322,7 +302,7 @@ P2
 
 
 
-# 基因—通路图 	 ----------------------------------------------------
+# Gene-pathway map ----------------------------------------------------
 
 library(ggnewscale)
 cnetplot(go_BP)
@@ -388,18 +368,13 @@ enrichKK@result$Description[1:10]
 library(ggnewscale)
 cnetplot(enrichKK)
 
-
 library(patchwork)
 P1 + P3
 
 
-
-
-
-
 P1 + P3 + plot_layout(nrow = 1, widths = c(1.5, 3)) 
-#不想图片都是一样大的，使用plot_layout来设置高度/宽度的分配
-#这边为a分配了四分之三的高，而b只有四分之一。
+## If you don't want all images to be the same size, use plot_layout to set the height/width distribution
+## Here, a is allocated three-quarters of the height, while b is only allocated one-quarter.
 
 (P1 + P3 + plot_layout(nrow = 1, widths = c(1.5, 3)) )
 
@@ -410,12 +385,7 @@ PP
 ggsave(filename="beautiful.pdf", plot=PP, width = 14, height=8, units="in")
 
 
-
-
-
-
-
- # ??ѡGO term ---------------------------------------------------------------
+# GO term ---------------------------------------------------------------
 
 which(dasimr[,1] >= pr)
 go <- as.matrix(read.csv("TCGA\\687_37\\result\\chart_96AD.csv",header = T)[-c(10,13,25),])

@@ -16,8 +16,6 @@ path <- '/Users/lilingyu/E/PhD/R/'
 # Creat Files ------------------------------------------------------------------
 setwd(paste(path, 'CNetCox/Data/', sep=''))
 
-
-
 # load gene and net and cut-----------------------------------------------------
 gene <- read.csv('TCGA_NEW/UNgene_component.csv',header = T)
 net <- read.csv('TCGA_NEW/UNgene_comp_net.csv')
@@ -27,7 +25,6 @@ net[which(net[,1] == "CTCFL"),2]
 net[which(net[,1] == "CTCFL"),2] == "EP300"
 
 # load coefficient --------------------------------------------------------
-
 coef <- read.csv("Result/Result1/theta1.csv", header = F, check.names = FALSE, sep = ",")
 coefabs <- abs(coef)[-1,]
 
@@ -92,8 +89,6 @@ marker <- union(ed[,1], ed[,2])
 write.csv(marker, "Result/Result1/marker13.csv", row.names = F)
 
 
-
-
 # my_CI function ----------------------------------------------------------
 my_CI <- function(feature_plus, data){
   univ_formulas <- sapply(feature_plus, 
@@ -102,8 +97,6 @@ my_CI <- function(feature_plus, data){
   CI <- univ_models[[1]]$concordance[6]
   return(CI)
 }
-
-
 
 
 # load test data and claculus the CI value --------------------------------

@@ -1,6 +1,6 @@
-
-###############   theta_selection (从matlab输出的系数theta中选择出特征来)  ##############
 ## 2025.06.01 Copy from SVM and used  for CNet-RCPH
+
+###########  theta_selection (select features from the coefficients theta: matlab)  ############
 
 rm(list=ls())
 
@@ -31,16 +31,16 @@ ed <- as_edgelist(p1, names = TRUE)
 
 
 g <- p1
-plot(g, layout=layout.fruchterman.reingold, # 只有这一行，图都挤到一块了
-     vertex.size = 8,  # 设置节点大小
-     vertex.label = V(g)$name, # 虽然边和节点可能都有名字，但默认时这些名字可能没有被当做标签
-     vertex.label.cex = 0.8, # 标签字体大小
-     vertex.label.dist = 0.1, # 设置节点和标签的距离，便于错开重叠
-     vertex.label.color = "black"  # 设置标签颜色
+plot(g, layout=layout.fruchterman.reingold,  
+     vertex.size = 8,   
+     vertex.label = V(g)$name, 
+     vertex.label.cex = 0.8, 
+     vertex.label.dist = 0.1,  
+     vertex.label.color = "black"   
 )
 
 
-# 在图中的gene作为biomarker' ----------------------------------------------------
+# The gene in the figure is used as a biomarker ----------------------------------------------------
 nodename <- get.vertex.attribute(g)
 feature_new <- as.matrix(nodename$name)
 colnames(feature_new) <- c('biomarker')
@@ -52,8 +52,7 @@ write.csv(feature_new,"feature_CNet.csv",row.names = F,quote = F)
 
 
 
-# 提取最大网络 ------------------------------------------------------------------
-
+# Extracting the largest network ------------------------------------------------------------------
 clu <- components(p1)
 groups(clu)
 
@@ -74,12 +73,10 @@ p1 <- simplify(PP)
 ed <- as_edgelist(p1, names = TRUE)
 
 g <- p1
-plot(g, layout=layout.fruchterman.reingold, # 只有这一行，图都挤到一块了
-     vertex.size = 8,  # 设置节点大小
-     vertex.label = V(g)$name, # 虽然边和节点可能都有名字，但默认时这些名字可能没有被当做标签
-     vertex.label.cex = 0.8, # 标签字体大小
-     vertex.label.dist = 0.1, # 设置节点和标签的距离，便于错开重叠
-     vertex.label.color = "black"  # 设置标签颜色
+plot(g, layout=layout.fruchterman.reingold,  
+     vertex.size = 8,  
+     vertex.label = V(g)$name, 
+     vertex.label.cex = 0.8,  
+     vertex.label.dist = 0.1,  
+     vertex.label.color = "black"   
 )
-
-

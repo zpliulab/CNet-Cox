@@ -38,8 +38,8 @@ my_overlap <- function(x, y){
 } 
 
 
-# »­Í¼ ----------------------------------------------------------------------
-source('D:\\E\\²©Ê¿\\R_³ÌĞò\\BRCA\\R\\myoverlap_separate2GroupsCox.R')
+## ----------------------------------------------------------------------
+source('D:\\E\\ï¿½ï¿½Ê¿\\R_ï¿½ï¿½ï¿½ï¿½\\BRCA\\R\\myoverlap_separate2GroupsCox.R')
 library(ggpubr)
 library(magrittr)
 library(survminer)
@@ -65,7 +65,7 @@ library(survminer)
 library(survival)
 library(ggplot2)
 
-setwd("D:\\E\\²©Ê¿\\R_³ÌĞò\\BRCA\\Data\\TCGA_NEW\\result")
+setwd("D:\\E\\ï¿½ï¿½Ê¿\\R_ï¿½ï¿½ï¿½ï¿½\\BRCA\\Data\\TCGA_NEW\\result")
 
 data = read.table("TCGA_OS_3gene.txt", header = T, check.names = FALSE)
 gene_name <- colnames(data)[3]
@@ -112,9 +112,6 @@ p <- ggsurvplot(fit, data = data,
                 break.time.by = 6
 ) # break X axis in time intervals by 500.
 
-
-
-# Ìí¼ÓHRºÍCI
 
 res_cox <- coxph(Surv(time, status) ~riskscore, data=data)
 HR <- round(summary(res_cox)$conf.int[1],2)

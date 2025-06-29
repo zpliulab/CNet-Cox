@@ -1,4 +1,3 @@
-
 rm(list = ls())
 
 library(survminer)
@@ -11,22 +10,22 @@ path <- '/Users/lilingyu/E/PhD/R/'
 # path <- '/home/lly/R/'
 setwd(paste(path,'CNetCox/Feature_data', sep=''))
 
-myfile = list.files("Xtile")                #list.files???input?ļ??????????ļ???????a
-dir = paste("./Xtile/", myfile, sep="")     #??paste?????·????��dir
+myfile = list.files("Xtile")                  
+dir = paste("./Xtile/", myfile, sep="")      
 n = length(dir) 
 
 
-# ????ȡcut-off,??????ͼ ---------------------------------------------------------
+## ---------------------------------------------------------
 i <- 3
 
 d9
 
-data = read.table(file = dir[i],header=T, check.names = FALSE) #??????һ???ļ????ݣ????Բ????ȶ?һ????????Ϊ?˼򵥣?ʡȥ????data.frame??ʱ?䣬??ѡ???ȶ???һ???ļ?
+data = read.table(file = dir[i],header=T, check.names = FALSE)  
 dir[i]
 gene_name <- colnames(data)[3]
 exprSet <- data.frame(t(data))
 
-## ???ýض?ֵ  https://www.jianshu.com/p/e72605df6348
+## https://www.jianshu.com/p/e72605df6348
 alpha <- 0.328
 
 risk_score  <- t(as.matrix(exprSet[gene_name,]))
@@ -40,37 +39,37 @@ table(data$risk_score)
 fit <- survfit(Surv(time, status)~riskscore, data = data)
 
 p <- ggsurvplot(fit, data = data, 
-                conf.int = F, # ????????????
-                # surv.median.line = "hv",  # ??????λ????ʱ??
-                risk.table = TRUE, # ?????ۼƷ???????
-                tables.height= 0.25, # ????Ϊ????��?????????ĸ߶?
-                cumcensor = T,    # ?????ۻ?ɾʧ??
-                legend = c(0.83,0.95), # ָ??ͼ??λ??
+                conf.int = F,  
+                # surv.median.line = "hv",  
+                risk.table = TRUE,  
+                tables.height= 0.25,  
+                cumcensor = T,     
+                legend = c(0.83,0.95),  
                 
                 # P value
                 pval = TRUE, 
                 pval.size=6, 
                 font.pval= c(14, "bold", "black"),
-                pval.coord = c(0.00, 0.05), #????Pval??λ??
+                pval.coord = c(0.00, 0.05),  
                 
                 # legend
                 legend.title = '', # gene_name
-                legend.labs=c("High risk", "Low risk"), #??ǩ
-                font.legend= c(12, "plain", "black"),  # ͼ??????
+                legend.labs=c("High risk", "Low risk"),  
+                font.legend= c(12, "plain", "black"),   
                 # font.main = c(100, "bold", "black"),
                 # xlim = c(0,72), # present narrower X axis, but not affect
                 # survival estimates.
                 palette=c("red", "blue"),
                 font.x = c(12, "plain", "black"),
-                font.y = c(12, "plain", "black"), # x?ᡢy??????
-                font.tickslab = c(12, "plain", "black"), # ?̶ȱ?ǩ????
+                font.y = c(12, "plain", "black"),  
+                font.tickslab = c(12, "plain", "black"),  
                 xlab = "Time in years", # customize X axis label. year
                 break.time.by = 2
 ) # break X axis in time intervals by 500.
 p
 
 
-# ????HR??CI https://www.zhihu.com/question/347864496/answer/836230749 -------
+## HR-CI https://www.zhihu.com/question/347864496/answer/836230749 -------
 
 res_cox <- coxph(Surv(time, status) ~riskscore, data=data)
 HR <- round(summary(res_cox)$conf.int[1],2)
@@ -94,8 +93,6 @@ name4 <- name3[1]
 name5 <- str_c(name4,"_ex")
 
 path <- paste("./Xtilefigure/", paste(name5,".pdf", sep=""), sep="")
-pdf(path, width = 4.8, height = 6, onefile = FALSE)  # ????onefile ????ΪFALSE ????ɢ??ͼ?Ḳ??ǰ???Ŀհ?
+pdf(path, width = 4.8, height = 6, onefile = FALSE)   
 p1
 dev.off() 
-
-
