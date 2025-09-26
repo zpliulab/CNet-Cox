@@ -1,22 +1,22 @@
-%% 格式化
+%% Format
 clc; clear; close all; format long;  % format long;
-%% 全局变量
+%% Global variables
 global L1  X_train  ytime_train  R_matrix  ystatus_train  lambda_opt  alpha_opt  m  p1
 
-%% set pathway
+%% Set pathway
 path = '/home/lly/R/CNetCox/Data/';
 % path = '/Users/lilingyu/E/PhD/R/CNetCox/Data/';
 % path = 'D:\E\博士\R_程序\CNetCox\Data\';
 [path,'TCGA_NEW/']
 
-%% 邻接矩阵
+%% Adjacency matrix
 adj = importdata([path,'TCGA_NEW/adjmatrix_comp_UNG.csv']);
 % adj = importdata('adjmatrix_comp_UNG.csv');
 A_adj = sparse(adj.data);
 %% Set folds in cv
 nfold = 5;
 
-%% 割点
+%% Cut point
 vector_hat = importdata([path,'TCGA_NEW/cut_vector_UNgene.txt']); 
 % vector_hat = importdata('cut_vector_UNgene.txt'); 
 delta_hat = vector_hat.data;
@@ -25,7 +25,7 @@ delta_hat = vector_hat.data;
 options = optimoptions('fmincon','Algorithm','interior-point');
 options.MaxFunEvals = 1e6;
 
-%% 数据输入
+%% Inlut data
 i = 2;
 txt = importdata([path,'Data_train/',int2str(i)','.txt']); 
 % txt = importdata(['Data_train/23.txt']);  
@@ -38,7 +38,7 @@ ystatus_train = train_data(1:m,2);
 p = q-2;
 p1= q-1;
 
-%% laplace 矩阵
+%% laplace Matix
 [L, L1] = Laplacian_Matrix(p,A_adj);
 % L = eye(p,p);
 
@@ -62,13 +62,13 @@ lambda = exp(log(1):e:log(lammax));
 %% get the optimal lambda and alpha through cross validation 
 % [lambda_opt, alpha_opt, r] = cvCox( X_train, ytime_train, ystatus_train, R_matrix, L1, alpha, lambda, nfold );
 
-%% 最优参数
+%% Optimal parameters
 alpha_opt = 0.5
 lambda_opt  = 1.5763
 
-%% 约束条件
-theta_0 = zeros(p1,1); % 初值为0
-u_0 = (1e-4)*ones(p1,1);  % 初值为1
+%% Constraints
+theta_0 = zeros(p1,1);    % Initial value is 0
+u_0 = (1e-4)*ones(p1,1);  % The initial value is 1
 
 a11 = eye(p1,p1);
 a22 = -1*eye(p1,p1);
@@ -98,21 +98,21 @@ for j = 1:p1
 end
 vlb = [vlb1; vlb1];        
 vub = [vub1; vub1];  
-%% 内点法求解
+%% Slovling using interior point method
 [X_sol, cost, exitflag, output, mu, grad, hessian] = fmincon(@(x)(costFunctionCox(x(1:p1),x(p1+1:2*p1))), [theta_0;u_0], A, b, Aeq, beq, vlb, vub, [], options);
 theta = X_sol(1:p1);
 u = X_sol(p1+1: 2*p1);
 
-theta_hat = X_sol(2:p1); % 系数
-theta_hat0 = X_sol(1);  % 截距
+theta_hat = X_sol(2:p1); % coefficient
+theta_hat0 = X_sol(1);   % intercept
 u_hat0 = X_sol(p1+1);
 
-%% 输出 Cost 和 theta
+%% Outpunt Cost and theta
 % txt1 = importdata(['D:\E\博士\R_程序\SVM\Data\RTCGA\TCGA_pro_outcome_TN_log_comp_UNtest.txt']);  
 fprintf('Cost at theta found by fmincon: %e', cost);
 fprintf('\n')
 para = [lambda_opt, cost]
-%% 预测
+%% Predict
 % format long;
 % txt1 = importdata(['Data_test/1.txt']);  
 % test_data = txt1.data;
@@ -124,7 +124,7 @@ para = [lambda_opt, cost]
 % disp(RefereceResult) 
 % P_test = [y_pre, y_true];
 % para = [lambda_opt, AUC, cost]
-%% 保存
+%% Save
 % csvwrite(['P_test23.csv'],P_test);
 csvwrite([path,'Result/Result',int2str(i),'/theta_hat',int2str(i),'.csv'],theta_hat);
 csvwrite([path,'Result/Result',int2str(i),'/theta',int2str(i),'.csv'],theta);

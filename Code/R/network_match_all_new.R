@@ -1,3 +1,4 @@
+## 2021.9.26 Input the feature genes from each method to obtain the pathway gene-network pairs
 rm(list=ls())
 
 library(dplyr)        
@@ -6,13 +7,13 @@ library(tidyverse)
 library(igraph)
 
 
-setwd('D:\\E\\��ʿ\\R_����\\SVM\\Data\\RTCGA')
+setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\RTCGA')
 net <- as.matrix(read.csv("allgene_comp_net.csv",header = T))
 net[1,]
 
 
 
-setwd('D:\\E\\��ʿ\\R_����\\SVM\\Data\\RTCGA\\result\\featurenew')
+setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\RTCGA\\result\\featurenew')
 
 myfile = list.files("CsvdataFeatureSeleOnce")                 
 dir = paste("./CsvdataFeatureSeleOnce/", myfile, sep="")      

@@ -12,7 +12,7 @@ path <- '/Users/lilingyu/E/PhD/R/'
 setwd(paste(path, 'CNetCox/Data/Result', sep=''))
 
 
-setwd("D:\\E\\??ʿ\\R_????\\BRCA\\Data\\TCGA_NEW\\Result")
+setwd("D:\\E\\博士\\R_程序\\BRCA\\Data\\TCGA_NEW\\Result")
 
 data = read.table("TCGA_feature_data.txt", header = T, check.names = FALSE)
 Data <- data.frame(t(data))

@@ -83,16 +83,16 @@ dotplot(go_BP, font.size=12, showCategory=23,title="Enrichment GO Top 23") +
 
 
 
-# 选择要显示的术语 ----------------------------------------------------------------
+# Select the terms to display ----------------------------------------------------------------
 setwd('/Users/lilingyu/E/PhD/R/CNetCox/Result/cluster/')
 ## load go list
 set <- c(1,2,9:16, 19:23, 26,27, 29:31, 37, 43, 47)
 aa0 <- read.csv("cluster_GO_cluster.csv",header = T, sep = ",")[set,c(1,2)]
 selected_terms <- aa0$ID
 
-# 根据选定的术语对数据进行子集化
+# Subset the data based on the selected terms.
 go_BPsub <- go_BP[go_BP@result$ID %in% selected_terms,]
-# 然后自己计算Fold Enrichment，并按照Fold Enrichment升序排序
+# Calculate the Fold Enrichment value yourself and sort results in ascending order based on Fold Enrichment values.
 library(stringr)
 gr1 <- as.numeric(str_split(go_BPsub$GeneRatio,"/",simplify = T)[,1])
 gr2 <- as.numeric(str_split(go_BPsub$GeneRatio,"/",simplify = T)[,2])
@@ -102,7 +102,7 @@ go_BPsub$fold <- (gr1/gr2)/(bg1/bg2)
 go_BPsub <- arrange(go_BPsub,fold)
 
 
-# 使用 dotplot() 绘制图形
+# Use dotplot() to create the graph.
 dotplot(go_BPsub)
 go_BPsub$GeneRatio
 
@@ -130,7 +130,7 @@ ggplot(go_BPsub, aes(x = fold,y = Description)) +
                                    hjust = 0.5, vjust = 0.5, size = 11)) 
 
 
-# plotGOgraph(go_BP) 	#GOͼ?????????????Գ??????Ͻ?????Ϊpdf
+# plotGOgraph(go_BP)  
 library(ggnewscale)
 cnetplot(go_BP)
 

@@ -1,9 +1,9 @@
-% predict-分类器对测试集的分类结果
-% ground. _truth -测试集的正确标签,这里只考虑二分类,即-1和1
-% auc-返回ROC曲线的曲线 下的面积
+% predict - The classification results of the classifier on the test set
+% ground_truth - The correct labels for the test set; here we only consider binary classification, i.e., -1 and 1
+% auc - Returns the area under the ROC curve
 function auc = plotROC(ground_truth, predict)
-%初始点为( 1.0, 1.0 )
-%计算出ground_ truth中正样本的数目pos_ num和负样本的数目neg. num
+% The initial point is (1.0, 1.0)
+% Calculate the number of positive samples (pos_num) and negative samples (neg_num) in the ground truth dataset.
 pos_num = sum(ground_truth==1);
 neg_num = sum(ground_truth==-1);
 m=size(ground_truth,1);
@@ -27,16 +27,16 @@ auc = auc+y(m)*x(m)/2;
 % plot(x,y);
 
 h1 = plot(x,y,'-b','LineWidth',3,'MarkerSize',3);
-%% 自己加的
+%% Added by myself
 hold on;
 color4 = [107,105,102]./255;
 x_dig=0:0.01:1;
 y_dig=x_dig;
-plot(x_dig,y_dig,'--','Color',color4,'LineWidth',1.5); %画中间的虚线
+plot(x_dig,y_dig,'--','Color',color4,'LineWidth',1.5); %Draw the dashed line in the middle
 
 xlabel('False Positive Ratio (1-Specificity)','fontsize',12,'FontWeight','bold');
 ylabel('True Positive Ratio (Sensitivity)','fontsize',12,'FontWeight','bold');
-% title('ROC曲线图');
+% title('ROC curve');
 
 set(gca,'FontSize',12,'LineWidth',1.5);
 set(get(gca,'YLabel'),'FontSize',12);
@@ -49,11 +49,13 @@ hh = legend([h1], ROCtitle_1, 'Location','southeast')%,'Location','southeast');
 set(hh,'edgecolor','white');
 end
 
-%%
+%% Learn from CSDN
+% https://blog.csdn.net/xmu_jupiter/article/details/21885299
+
 % function  auc = plot_roc( predict, ground_truth )
 % % INPUTS
-% %  predict       - 分类器对测试集的分类结果
-% %  ground_truth - 测试集的正确标签,这里只考虑二分类，即0和1
+% %  predict        - 分类器对测试集的分类结果
+% %  ground_truth   - 测试集的正确标签,这里只考虑二分类，即0和1
 % % OUTPUTS
 % %  auc            - 返回ROC曲线的曲线下的面积
 % 
@@ -91,5 +93,3 @@ end
 % auc = -trapz(X,Y);  
 % 
 % end
-
-% https://blog.csdn.net/xmu_jupiter/article/details/21885299

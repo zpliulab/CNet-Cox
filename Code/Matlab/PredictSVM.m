@@ -10,7 +10,9 @@ theta = Est_theta;
 %% 2 different data possible: for GENES and for CLASSES (here only for classes)
 % separating line: x*w+b=f(x)
 pp = X*theta;
-% AUC = plotroc(y0,pp);    % 对于SVM分类器，MATLAB有自己的自带方法plotroc方法，但是对于随机森林得到的分类模型和预测不适用
+% MATLAB has its own built-in function, plotroc, for plotting ROC curves with SVM classifiers, 
+% but this function is not suitable for random forest classification models and predictions.
+% AUC = plotroc(y0,pp);  
 % AUC = AUC(y0,pp);
 % pred_class = sign(pp);
 pred_class = sign(pp);
@@ -20,7 +22,7 @@ AUC = plotROC(y0,pred_class);
 tabClass = confusionmat(y0,pred_class);
 figure;
 tabPlot = printConMat(tabClass);
-% stats = statsOfMeasure(tabClass);   % 有错误
+% stats = statsOfMeasure(tabClass);   % There are errors
 [Result,RefereceResult] = confusion.getMatrix(y0,pred_class);
 % disp(Result)
 % disp(RefereceResult)

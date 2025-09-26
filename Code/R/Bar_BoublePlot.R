@@ -505,7 +505,7 @@ ggplot(df, aes(x = Status, y = Var1, color = Status)) +
                      comparisons=list(c("Alive","Dead"))) +
   geom_jitter(alpha = 0.3,size=3, aes(fill=Patient), shape=21, position = position_dodge(0.5)) +
   geom_line(aes(group = Patient), 
-            color = 'grey40', lwd = 0.5, position = position_dodge(0.5))+ #添加连线
+            color = 'grey40', lwd = 0.5, position = position_dodge(0.5))+ #Add connection line
   scale_y_continuous(expand = expansion(mult = c(0.05, 0.1))) +
   facet_wrap(~sample, scales = "free_y") +
   theme_bw() +

@@ -9,7 +9,6 @@
 %% clear
 clc; clear; close all; format long;
 
-
 %% 
 % theta = np.array([1,2,3]).reshape(1,3)
 % R = np.array([[1,1,1],[0,1,1],[0,0,1]])
@@ -23,8 +22,8 @@ size(R)     % 3*3
 % theta*R
 % theta.*R
 % sum(theta*R, 1)
-% python 中的*是对应位置相乘（矩阵用np.dot（）），
-% matlab中的*是矩阵乘法，对应位置相乘是 .*
+% In Python, * performs element-wise multiplication (for matrices, use np.dot()).
+% In MATLAB, * performs matrix multiplication; element-wise multiplication is done using .*
 theta .* R
 sum(theta .* R, 2)
 theta * R'

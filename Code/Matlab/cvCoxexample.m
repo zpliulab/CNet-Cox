@@ -98,7 +98,8 @@ for i=1:nfold
  for j=1:sizelam
 %      j = 1;
 % 2023.4.14 LLY added 
-% eval函数作用简单来说就是可以把字符串当作命令来执行。即将字符串自动识别并转化为matlab命令
+% In simple terms, the function of the 'eval' command is to execute a string as if it were a MATLAB command. 
+% It automatically interprets the string and converts it into a valid MATLAB command.
      fnw=['[Theta,Theta0]=LogitisLapCox(xnot',int2str(i),',ytimenot',int2str(i),',ynot',int2str(i),', R_matrix',int2str(i),', L,lambda(',int2str(j),')*alphacan,lambda(',int2str(j),')*(1-alphacan));'];
      eval(fnw);
      %% r is the matrix that contains the residual=|| yi-(1/(1+exp(-theta'*Xi))>0.5) ||_2

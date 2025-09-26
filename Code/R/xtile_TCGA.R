@@ -39,7 +39,7 @@ my_overlap <- function(x, y){
 
 
 ## ----------------------------------------------------------------------
-source('D:\\E\\��ʿ\\R_����\\BRCA\\R\\myoverlap_separate2GroupsCox.R')
+source('D:\\E\\博士\\R_程序\\BRCA\\R\\myoverlap_separate2GroupsCox.R')
 library(ggpubr)
 library(magrittr)
 library(survminer)
@@ -65,7 +65,7 @@ library(survminer)
 library(survival)
 library(ggplot2)
 
-setwd("D:\\E\\��ʿ\\R_����\\BRCA\\Data\\TCGA_NEW\\result")
+setwd("D:\\E\\博士\\R_程序\\BRCA\\Data\\TCGA_NEW\\result")
 
 data = read.table("TCGA_OS_3gene.txt", header = T, check.names = FALSE)
 gene_name <- colnames(data)[3]

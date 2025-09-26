@@ -91,18 +91,18 @@ eta = n*(1-alpha)*lambda0;
 X = [X,ones(n,1)];
 [n1, p1] = size(M);
 if n1~= p+1
-    M = [M,zeros(p,1)];   % 左右合并
-    M = [M;zeros(p+1,1)']; % 上下合并
+    M = [M,zeros(p,1)];       % Merge left and right
+    M = [M;zeros(p+1,1)'];    % Merge top and bottom
 end
-M_hat = M;    % 原M为sparse，不可行
+M_hat = M;                    % The original matrix M is sparse, which is not feasible.
 for t = 1:p
     M_hat(t,t) = 0;  
 end
 M_hat = abs(M_hat);
 
-% h1=view(biograph(M_hat));   %画图
-% Z = graphtraverse(M_hat,1); %使用深度优先算法从第1个节点开始遍历
-% order2=graphtraverse(M_hat,4,'Method','BFS'); %使用广度优先遍历
+% h1=view(biograph(M_hat));   % Plot
+% Z = graphtraverse(M_hat,1); % Use a depth-first search algorithm to traverse the nodes starting from the first node.
+% order2=graphtraverse(M_hat,4,'Method','BFS'); % Use breadth-first traversal.
 
 
 % Initialization
@@ -128,10 +128,10 @@ log_likelihhod = zeros(niter, 1);;
       theta(j) = (Soft_Thresholding(t(j)-theta'*D_hat(j,:)', lambda))/XDX(j,j);
 %       [ci sizes] = components(M); 
      
-% j = 1;      % 初始时，从第一行开始
+% j = 1;                        % Initially, start from the first line.
 % path = [j];
 %     for k=1:p   
-%         %寻找当前行k中的1所在的位置     
+%         % Find the position of the number 1 in the current row k.     
 %         for l=1:p       
 %             if(M_hat(j,l) == 1)            
 %                 j = l;            
@@ -146,7 +146,7 @@ log_likelihhod = zeros(niter, 1);;
               if M(i,k) ~= 0;
                  Z(k) = k;
               else
-                  break % 必须加 break
+                  break % A break statement is required here.
               end
           end
       end
@@ -170,4 +170,3 @@ log_likelihhod = zeros(niter, 1);;
        
 % path
 % return
-

@@ -23,13 +23,13 @@ cvx_begin
     variables theta(dimG+1);
 %     variables theta(dimn);
 
-%% 测试 max 函数，可行
-    z = X_trainhat * theta;     % 605   1
-%% 加上惩罚项
+%% Testing the max function; it works.
+    z = X_trainhat * theta;        % 605   1
+%% Add a penalty term
 % It must vector*matrix. a*A=b. a and b is 1*3, A is 3*3
 % Here z is 3*1, so it needs 2 times T. one for vector, and one for sum.
 %%
-% bb = sum(z' .* R_matrix, 2);   %% Matrix dimensions must agree.
+% bb = sum(z' .* R_matrix, 2);     % Matrix dimensions must agree.
 %%
 %     variables z(dimn)
 %     expression b(dimn,1)
@@ -37,24 +37,24 @@ cvx_begin
 %     for i = 1:+
 %         dimn
 %         for j = 1:dimn
-%             b(i) = b(i) + R_matrix(i,j) * z(j); % 无法从 cvx 转换为 double
+%             b(i) = b(i) + R_matrix(i,j) * z(j);   % Cannot convert from cvx to double
 %         end
 %     end
 %%
 %     ystatus_train * (X' * coef - log( sum( exp((X'*coef)') .* R_matrix_train, 2)' )')
-%     minimize(  sum( exp(z') )  )    % right
-%     minimize(  sum( exp(z') * R_matrix))     % right 向量求和
-%     minimize(  sum( (exp(z))'* R_matrix))     % right
+%     minimize(  sum( exp(z') )  )                          % right
+%     minimize(  sum( exp(z') * R_matrix))                  % right - Sum vector
+%     minimize(  sum( (exp(z))'* R_matrix))                 % right
 %     minimize(  sum( log_sum_exp( X_trainhat * theta) ) )  % right
-%     minimize(  sum( log_sum_exp( b') ) )  % wrong
-    minimize(  sum( log_sum_exp( z'* R_matrix') ) )  % wrong
-%     minimize( (exp(z))' .* R_matrix )    % wrong
-%     minimize( sum(theta' .* R_matrix, 2) )    % wrong
+%     minimize(  sum( log_sum_exp( b') ) )                  % wrong
+    minimize(  sum( log_sum_exp( z'* R_matrix') ) )         % wrong
+%     minimize( (exp(z))' .* R_matrix )                     % wrong
+%     minimize( sum(theta' .* R_matrix, 2) )                % wrong
 %     sum( log_sum_exp( ((X_trainhat * theta) .* R_matrix), 2) )    % wrong
-%     minimize(  sum(sum( (exp(z))' .* R_matrix, 2) ))    % wrong
-%     minimize(  sum( sum( (exp(z))' .* R_matrix, 2) )  )    % right
+%     minimize(  sum(sum( (exp(z))' .* R_matrix, 2) ))      % wrong
+%     minimize(  sum( sum( (exp(z))' .* R_matrix, 2) )  )   % right
 %   minimize( sum( max( zeros(m,1), ones(m,1)-ystatus.*z ) )) 
-%     minimize(  sum( sum( (exp(z_hat))' .* R_matrix, 2)' )  )    % right
+%     minimize(  sum( sum( (exp(z_hat))' .* R_matrix, 2)' )  )      % right
 %     + lambda1*norm(theta(2:dimG+1),1)+lambda2*theta(2:dimG+1)'*L*theta(2:dimG+1) );
 %%
 cvx_end

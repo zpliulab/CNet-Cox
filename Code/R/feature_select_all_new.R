@@ -1,68 +1,68 @@
-library(dplyr)       # ％>％ 管道函数的调用，传参
+library(dplyr)        
 library(tidyr)
-library(tidyverse)   # tibble 的调用
+library(tidyverse)    
 
 
 
-# 根据 feature 找 gene 表达数据 --------------------------------------------------
+# Find gene expression data based on features --------------------------------------------------
 rm(list = ls())
 
 # load(".RData")
 
-# setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\GEO\\GSE76275')
+# setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\GEO\\GSE76275')
 # Data1 = read.table("GSE76275_outcome_scale.txt", header = T, check.names = FALSE)
 
 
-# setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\GEO\\GSE15852')
+# setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\GEO\\GSE15852')
 # Data1 = read.table("GSE15852_outcome_scale.txt", header = T, check.names = FALSE)
 
 
-# setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\GEO\\GSE25407')
+# setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\GEO\\GSE25407')
 # Data1 = read.table("GSE25407_outcome_scale.txt", header = T, check.names = FALSE)
 
 
-# setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\GEO\\GSE10180')
+# setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\GEO\\GSE10180')
 # Data1 = read.table("GSE10180_outcome_scale.txt", header = T, check.names = FALSE)
 
 
-# setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\GEO\\GSE10780')
+# setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\GEO\\GSE10780')
 # Data1 = read.table("GSE10780_outcome_scale.txt", header = T, check.names = FALSE)
 
 
-# setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\GEO\\GSE42568')
+# setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\GEO\\GSE42568')
 # Data1 = read.table("GSE42568_outcome_scale.txt", header = T, check.names = FALSE)
 
 
-# setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\GEO\\GSE70905')
+# setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\GEO\\GSE70905')
 # Data1 = read.table("GSE70905_outcome_scale.txt", header = T, check.names = FALSE)
 
 
-# setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\GEO\\GSE10797')
+# setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\GEO\\GSE10797')
 # Data1 = read.table("GSE10797_outcome_scale.txt", header = T, check.names = FALSE)
 
 
-# setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\GEO\\GSE61304')
+# setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\GEO\\GSE61304')
 # Data1 = read.table("GSE61304_outcome_scale.txt", header = T, check.names = FALSE)
 
-# setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\GEO\\GSE45827')
+# setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\GEO\\GSE45827')
 # Data1 = read.table("GSE45827_outcome_scale.txt", header = T, check.names = FALSE)
 
-# setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\GEO\\GSE65194')
+# setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\GEO\\GSE65194')
 # Data1 = read.table("GSE65194_outcome_scale.txt", header = T, check.names = FALSE)
 
-# setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\GEO\\GSE38959')
+# setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\GEO\\GSE38959')
 # Data1 = read.table("GSE38959_outcome_scale.txt", header = T, check.names = FALSE)
 
-# setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\GEO\\GSE36693')
+# setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\GEO\\GSE36693')
 # Data1 = read.table("GSE36693_outcome_scale.txt", header = T, check.names = FALSE)
 
-# setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\GEO\\GSE21422')
+# setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\GEO\\GSE21422')
 # Data1 = read.table("GSE21422_outcome_scale.txt", header = T, check.names = FALSE)
 
-# setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\GEO\\GSE26910')
+# setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\GEO\\GSE26910')
 # Data1 = read.table("GSE26910_outcome_scale.txt", header = T, check.names = FALSE)
 
-setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\GEO\\GSE20437')
+setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\GEO\\GSE20437')
 Data1 = read.table("GSE20437_outcome_scale.txt", header = T, check.names = FALSE)
 
 
@@ -70,12 +70,12 @@ dim(Data1)    # 21836   265
 # View(Data1[,1:10])
 
 
-setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\RTCGA\\result')
+setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\RTCGA\\result')
 
 
-myfile = list.files("feature")                #list.files命令将input文件夹下所有文件名输入a
-dir = paste("./feature/", myfile, sep = "")     #用paste命令构建路径变量dir
-n = length(dir)                                  #读取dir长度，也就是文件夹下的文件个数
+myfile = list.files("feature")                  # list.files command lists all file names in the "input" folder.
+dir = paste("./feature/", myfile, sep = "")     # Use the paste command to construct the path variable "dir"
+n = length(dir)                                 # Read the directory length, which means the number of files in the folder.
 for (i in 1:n) {
   # i <- 1
   gene = read.csv(file = dir[i],
@@ -126,9 +126,9 @@ for (i in 1:n) {
   write.table(genedata2, path, quote = F, sep = "\t")
   
   
-  # setwd('D:\\E\\博士\\R_程序\\SVM\\Data\\RTCGA')
+  # setwd('D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\RTCGA')
   data1 = read.table(
-    "D:\\E\\博士\\R_程序\\SVM\\Data\\RTCGA\\TCGA_pro_outcome_TN_log_comp_UNgene_scale.txt",
+    "D:\\E\\鍗氬＋\\R_绋嬪簭\\SVM\\Data\\RTCGA\\TCGA_pro_outcome_TN_log_comp_UNgene_scale.txt",
     header = T,
     check.names = FALSE
   )

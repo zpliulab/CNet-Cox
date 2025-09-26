@@ -401,5 +401,5 @@ goselect[,2]
 
 
 library(stargazer)
-stargazer(goselect, summary=FALSE, rownames=FALSE) #????stargazer????
+stargazer(goselect, summary=FALSE, rownames=FALSE) # stargazer
 # write.csv(goselect, "TCGA\\687_37\\result\\chart_5goselect.csv", row.names = F)

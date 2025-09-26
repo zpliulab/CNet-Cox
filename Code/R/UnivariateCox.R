@@ -3,7 +3,7 @@ library(plyr)
 
 rm(list = ls())
 
-setwd("D:\\E\\��ʿ\\R_����\\BRCA\\Data\\TCGA_NEW\\result")
+setwd("D:\\E\\博士\\R_程序\\BRCA\\Data\\TCGA_NEW\\result")
 
 data = read.table("TCGA_feature_data.txt", header = T, check.names = FALSE)
 Data <- data.frame(t(data))
