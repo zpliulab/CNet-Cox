@@ -116,19 +116,6 @@ my_CI(feature_plus, x1_hat)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Load Data ----------------------------------------------------------------------
 x <- read.table("Data_test/1.txt", header = T, check.names = FALSE)
 data <- data.frame(t(x))

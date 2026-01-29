@@ -1,15 +1,30 @@
+## 2023.4.12 LLY create, 2026.1.16 LLY used
+## Fellowed by ‘feature_select_GEO.R’, here calculate the PRS values based on:
+# > coef_gene
+# X           x
+# 1   EGR1  0.19721353
+# 2 IGFBP5  0.12010984
+# 3    JUN -0.13027310
+# 4   MAFK  0.15546594
+# 5    MYC -0.09864022
+# 6   TCF7 -0.10945767
+## And then use Xtile to plot KM curves.
+
+
+##############################################################################
+# Calculate the PRS values of GEO datasets based on PRS fornumation Eq. (1 )
+##############################################################################
 
 ## clear
 rm(list = ls())
 
 ## set pathway
-path <- '/Users/lilingyu/E/PhD/R/'
 # path <- '/home/lly/R/'
+path <- '/Users/lilingyu/E/PhD/R/'
+setwd(paste(path,'CNetCox/Feature_data', sep=''))
 
 ## load function
 source(paste(path, 'CNetCox/R/myoverlap_separate2GroupsCox.R', sep=''))
-
-setwd(paste(path,'CNetCox/Feature_data', sep=''))
 library(tidyverse)
 
 myfile = list.files("Data_GEO")               
@@ -32,34 +47,7 @@ coef_gene <- read.csv("UniMutVariate_markergene.csv", header = T, sep=',')
 coef <- as.matrix(coef_gene[,2])
 rownames(coef) <- coef_gene[,1]
 
-
-# my_overlap_coef ------------------------------------------------------
-my_overlap <- function(x, y){
-
-  coefs.v <- x[,1] %>% { .[. != 0]}
-  coefs.v %>% {
-    data.frame(gene.name   = names(.),
-               coefficient = .,
-               stringsAsFactors = FALSE)
-  } %>%
-    arrange(gene.name) %>%
-    knitr::kable()
-  
-  sele <- rownames(as.matrix(coefs.v))
-  gene <- rownames(y)[-c(1,2)]
-  overlap <- intersect(sele, gene)
-  
-  lab <- x[,1] %>% { .[. != 0]} %>% as.matrix
-  coefs.v <- lab[overlap,]
-  
-  my <- list(coefs.v, overlap)
-  return(my)
-} 
-
-
-
 # plot ----------------------------------------------------------------------
-
 library(ggpubr)
 library(magrittr)
 library(survminer)
@@ -70,11 +58,9 @@ plotp_Train <- separate2GroupsCox(as.vector(coef_test[[1]]), x_hat[, coef_test[[
                                  legend.outside = T)
 plot_train <- plotp_Train$plot
 
-
 ## for Xtile
-p_index <- cbind(y,plotp_Train$index)
+p_index <- cbind(y, plotp_Train$index)
 colnames(p_index) <- c(colnames(y), "riskscore")
-
 
 name <- dir[1]
 name1 <- str_split_fixed(name, "./", 2);
@@ -86,11 +72,11 @@ name5 <- str_c(name4,"_ex")
 
 setwd(paste(path,'CNetCox/Feature_data', sep=''))
 path <- paste("./Xtile/",paste(name4,".txt", sep=""), sep="")
-write.table(p_index, path, quote = F, row.names = F, sep="\t")
+# write.table(p_index, path, quote = F, row.names = F, sep="\t")
 path <- paste("./Figure/", paste(name5,".pdf", sep=""), sep="")
-pdf(path, width = 4.5, height = 4.5, onefile = FALSE) 
+# pdf(path, width = 4.5, height = 4.5, onefile = FALSE) 
 plot_train
-dev.off() 
+# dev.off() 
 
 
 

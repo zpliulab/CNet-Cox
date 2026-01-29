@@ -97,7 +97,7 @@ phi1[1,1]
 write.table(phi1, file = "Bulk_RNA-seq_data/GEO_noclin/GSE20711/prs_GSE20711_NEW.txt", quote=F,sep="\t")
 
 
-# ??????ͼ --------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 pred_log = read.table("Bulk_RNA-seq_data/GEO_noclin/GSE20711/prs_GSE20711_NEW.txt", header = T, check.names = FALSE)
 pred_log[which(pred_log[,2] == "1"),2]  <- c("Tumor")
@@ -105,7 +105,7 @@ pred_log[which(pred_log[,2] == "0"),2]  <- c("Normal")
 dim(pred_log)
 
 
-# ??pֵ ---------------------------------------------------------------------
+# pֵ ---------------------------------------------------------------------
 
 
 library(ggplot2)
@@ -116,19 +116,19 @@ my_comparisons <- list( c("Tumor", "Normal") )
 plot <- ggboxplot(pred_log, x = "Label", y = "PRS",
                   color = "Label", palette = "npg"#,  "npg", "aaas", "lancet", "jco", "ucscgb", "uchicago", "simpsons" and "rickandmorty"
 ) +  # add = "jitter" , fill = c("#90CAF9", "#F48FB1")
-  stat_boxplot(geom = "errorbar", width=0.30, size=0.6) +   # ʹ??????????ĩ?˶̺???
+  stat_boxplot(geom = "errorbar", width=0.30, size=0.6) +    
   geom_boxplot(size=0.6, fill=c("#099052", "#EF3122")) + 
-  #size????????ͼ?ı߿??ߺͺ??????߿??ȣ?fill??????????ɫ
+  #size 
   stat_compare_means(comparisons=my_comparisons, method = "t.test") + # Add p-value
   theme(legend.position="none", #????Ҫͼ??
-        axis.text.x=element_text(colour="black",size=14), #????x???̶ȱ?ǩ??????????
-        axis.text.y=element_text(size=14,face="plain"), #????x???̶ȱ?ǩ??????????
-        axis.title.y=element_text(size = 14,face="plain"), #????y???ı?????????????
-        axis.title.x=element_text(size = 14,face="plain"), #????x???ı?????????????
-        plot.title = element_text(size=15,face="bold",hjust = 0.5), #?????ܱ?????????????
-        panel.grid.major = element_blank(), #????ʾ??????
+        axis.text.x=element_text(colour="black",size=14),  
+        axis.text.y=element_text(size=14,face="plain"),  
+        axis.title.y=element_text(size = 14,face="plain"),  
+        axis.title.x=element_text(size = 14,face="plain"),  
+        plot.title = element_text(size=15,face="bold",hjust = 0.5),  
+        panel.grid.major = element_blank(),  
         panel.grid.minor = element_blank())+
-  ylab("Risk score")+xlab("") #????x????y???ı???
+  ylab("Risk score")+xlab("")  
 # stat_summary(fun = mean, geom = "point", 
 # shape = 18, size = 4, color = "blue")  # "#C5E1A5" Add global p-value
 
@@ -141,8 +141,8 @@ plot
 
 
 
-# С????ͼ --------------------------------------------------------------------
+# С --------------------------------------------------------------------
 
 ggplot(pred_log, aes(x=Label, y=PRS), color = "Label") + # , fill = c("#90CAF9", "#F48FB1")
   stat_compare_means(comparisons = my_comparisons, method = "t.test") + # Add pairwise comparisons p-value
-  geom_violin(aes(fill=Label))  # С????ͼ
+  geom_violin(aes(fill=Label))   

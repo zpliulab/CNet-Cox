@@ -1,31 +1,31 @@
-## 2023.4.12 LLY create
+## 2023.4.12 LLY create, 2026.1.16 LLY used
 ## Split TCGA data into Training and Test data with clinical data
 ## 2023.1.21 using five datasets and see the intersect
 ## 2023.4.23 using nine datasets and see each of them
+
+
+##############################################################################
+# Figure 2B. 68 prognostic bioomarkers
+##############################################################################
 
 ## clear
 rm(list = ls())
 
 ## set pathway
-path <- '/Users/lilingyu/Library/CloudStorage/OneDrive-TheUniversityOfHongKong/R/'
 path <- '/Users/lilingyu/E/PhD/R/'
 # path <- '/home/lly/R/'
+setwd(paste(path, 'CNetCox/Data/', sep=''))
 
 ## load function
 source(paste(path, 'CNetCox/R/MyFunctions.R', sep=''))
 
-# Creat Files ------------------------------------------------------------------
-setwd(paste(path, 'CNetCox/Data/', sep=''))
-
-
-# load gene and net and cut-----------------------------------------------------
+## load gene and net and cut
 gene <- read.csv('TCGA_NEW/UNgene_component.csv',header = T)
 net <- read.csv('TCGA_NEW/UNgene_comp_net.csv')
 cut <- read.table("TCGA_NEW/cut_vector_UNgene.txt", header = T, check.names = FALSE, sep = "\t")
 
 
 # Marker genes ------------------------------------------------------------
-
 ci <- c()
 p <- c()
 
@@ -42,7 +42,6 @@ p <- c()
 #   coef3 <- markerselect(1,k)[[2]]
   
 
-markerselect(3,5.15e-2)
 
 # marker1 <- markerselect(1,1.5e-1)[[1]]
 # marker2 <- markerselect(2,4e-2)[[1]]
@@ -107,8 +106,8 @@ filenum <- "3"
 markerinput <- marker3
 coefinput <- coef3
 
-## function(node_used,net)
 g <- markerPlot(markerinput, net)[[1]]
+
 # deg <- degree(g, mode="all")
 # V(g)$size <- deg * 2
 # plot(g,
@@ -119,6 +118,9 @@ markerNet <- markerPlot(markerinput, net)[[2]]
 # write.csv(markerNet, "Result/Result3/markerNet3.csv", row.names = F, quote = F)
 
 
+##############################################################################
+# Figure 2G. Survival analysis results of 68 prognostic BRCA markers.
+##############################################################################
 # load test data and calculus the CI value --------------------------------
 # filenum <- "1"
 # readtestdata <- function(filenum){
@@ -135,7 +137,7 @@ library(survival)
 feature_plus <- paste(markerinput,collapse="+")
 my_CI(feature_plus, x1_hat)
 
-library(dplyr)    # arrange function 
+library(dplyr)   
 library(glmSparseNet)
 coef_test <- my_overlap(coefinput, Data_test)
 plotp <- separate2GroupsCox(as.vector(coef_test[[1]]), x1_hat[, coef_test[[2]]], 
@@ -151,6 +153,69 @@ plotp$pvalue
 # }
 # ci 
 # p
+
+
+###########################################################################
+###########################################################################
+# 1. 计算风险得分
+sel_feats <- coef_test[[2]]
+sel_coefs <- as.numeric(coef_test[[1]])
+X_sub <- as.matrix(x1_hat[, sel_feats])
+predict_score <- as.vector(X_sub %*% sel_coefs)
+# predict_score <- xtile3    # same
+
+# 2. 计算time-dependent AUC
+library(timeROC)
+times <- c(1, 3, 5) * 365
+time_roc <- timeROC(
+  T = as.numeric(y1_hat$time),
+  delta = as.numeric(y1_hat$status),
+  marker = predict_score,
+  cause = 1,
+  times = times,
+  iid = TRUE
+)
+auc_res <- data.frame(Time = times / 365, AUC = time_roc$AUC)
+print(auc_res)
+
+
+## Improve version
+library(glmnet)
+fit <- cv.glmnet(as.matrix(x1_hat), Surv(y1_hat$time, y1_hat$status), family="cox", nfolds=5)
+predict_score <- predict(fit, newx=as.matrix(x1_hat), s="lambda.min", type="link")
+
+library(timeROC)
+times <- c(1, 3, 5) * 365
+time_roc <- timeROC(
+  T = as.numeric(y1_hat$time),
+  delta = as.numeric(y1_hat$status),
+  marker = predict_score,
+  cause = 1,
+  times = times,
+  iid = TRUE
+)
+auc_res <- data.frame(Time = times / 365, AUC = time_roc$AUC)
+print(auc_res)
+## save 
+# write.csv(auc_res, file="Compare/AUC_timeROC_CNet.csv", row.names = FALSE)
+
+# pdf("Compare/timeROC_curve_CNet.pdf", width = 4, height = 4.5)
+# plot(time_roc, time = times[1], col = "red", title = FALSE)
+# plot(time_roc, time = times[2], add = TRUE, col = "blue")
+# plot(time_roc, time = times[3], add = TRUE, col = "green")
+# legend("bottomright", legend=c("1 year","3 years","5 years"), col=c("red","blue","green"), lwd=2)
+# dev.off()
+###########################################################################
+###########################################################################
+
+
+## reference from six methods
+# predict_score <- predict(lasso.model, newx = as.matrix(x1_hat), type = "link")
+# times <- c(1,3,5) * 365  
+# time_roc <- timeROC(T = y1_hat$time, delta = y1_hat$status, marker = as.vector(predict_score), 
+#                     cause = 1, times = times, iid = TRUE)
+# auc_res <- data.frame(Time=times/365, AUC=time_roc$AUC)
+# print(auc_res)
 
 
 xtile3 <- as.matrix(cbind(y1, as.matrix(x1_hat[, coef_test[[2]]]) %*% as.matrix(coef_test[[1]])))
@@ -173,24 +238,24 @@ data$riskscore <- ifelse(as.matrix(x1_hat[, coef_test[[2]]]) %*% as.matrix(coef_
 fit <- survfit(Surv(time, status)~riskscore, data = data)
 library(survminer)
 library(survival)
+library(litedown)
+# library(ggsurvplot)
 p <- ggsurvplot(fit, data = data, 
                 conf.int = F,  
-                # surv.median.line = "hv",  
+                # surv.median.line = "hv",   
                 risk.table = TRUE,  
                 tables.height= 0.25,  
                 cumcensor = T,     
-                legend = c(0.83,0.95), 
-                
-                # P value
+                legend = c(0.83,0.95),  
+                ## P value
                 pval = TRUE, 
                 pval.size=6, 
                 font.pval= c(14, "bold", "black"),
-                pval.coord = c(0.00, 0.05),  
-                
+                pval.coord = c(0.00, 0.05), # 
                 # legend
-                # legend.title = '', 
+                # legend.title = '', # gene_name
                 # legend.labs=c("High risk", "Low risk"), 
-                # font.legend= c(14, "plain", "black"),   
+                # font.legend= c(14, "plain", "black"),  
                 # # font.main = c(100, "bold", "black"),
                 # # xlim = c(0,72), # present narrower X axis, but not affect
                 # # survival estimates.
@@ -198,9 +263,9 @@ p <- ggsurvplot(fit, data = data,
                 # font.x = c(14, "plain", "black"),
                 # font.y = c(14, "plain", "black"),  
                 # font.tickslab = c(14, "plain", "black"),  
-                # xlab = "Time in years",  
+                # xlab = "Time in years", # customize X axis label. year
                 # break.time.by = 2
-) # break X axis in time intervals by 500.
+)  
 
 
 # pdf("TCGA_NEW/TCGA_68_os.pdf", width = 5.0, height = 6, onefile = FALSE)
@@ -208,9 +273,15 @@ p
 # dev.off()
 
 
-# Extract marker data and label -------------------------------------------
 
-Data1 = read.table("TCGA_NEW/TCGA_BRCA_clin_546_1080_scale.txt", header = T, check.names = FALSE)
+
+
+##############################################################################
+# Table S4. Univariate and multivariate Cox analysis
+##############################################################################
+# Extract marker data and label -------------------------------------------
+Data1 = read.table("TCGA_NEW/TCGA_BRCA_clin_546_1080_scale.txt", header = T, 
+                   check.names = FALSE)
 # View(Data1[,1:10])
 
 gene <- as.matrix(read.csv("Result/Result3/marker3.csv", header = T, sep=','))
@@ -220,32 +291,27 @@ Data2 <- cbind(rownames(Data1), Data1)
 colnames(Data2) <- c('gene', colnames(Data1))
 # View(Data2[,1:10])
 
-genedata <- merge(gene, Data2, by = "gene")
+genedata <- merge(gene, Data2, by = "gene")    # 68
 genedata1 <- genedata %>% tibble::column_to_rownames(colnames(.)[1])
 # View(genedata1[,1:10])
 genedata1[1,1]
-genedata2 <- rbind(Data1[c(1,2),],genedata1)    # 55
+genedata2 <- rbind(Data1[c(1,2),],genedata1)    # 70
 # View(genedata2[,1:10])
 # write.table(genedata2,"TCGA_NEW/TCGA_Marker_Expr.txt",quote=F,sep="\t")  
 
 
 # Univariable and Multivalable Cox analysis -------------------------------
-
-######################### Univariate Cox ########################
-
-
+## Step 1：Univariate Cox ##############################
 library(survival)
 library(plyr)
 
 markerdata = read.table("TCGA_NEW/TCGA_Marker_Expr.txt", header = T, check.names = FALSE)
 Data <- data.frame(t(markerdata))
-
 str(Data)
 
 ## 928 -- 0;  152  -- 1
 Data$status<-factor(Data$status)
 summary(Data$status)
-
 
 ## step 1:
 y <- Surv(time=Data$time, event=Data$status==0)  
@@ -282,20 +348,19 @@ Uni_cox <- ldply(Uni_cox, data.frame)
 ## step 5: HR+95% CI+P 
 Uni_cox$HR.CI95 <- paste0(Uni_cox$HR," (",Uni_cox$CI5,'-',Uni_cox$CI95,")")
 Uni_cox <- Uni_cox[,-4:-6] #HR (95% CI)+P
-View(Uni_cox)
+# View(Uni_cox)
 
 which(Uni_cox[,4] <= 0.05)
 Uni_cox[which(Uni_cox[,4] <= 0.05),c(1,3)]
 
-################### Univariate Cox p<0.05 and Multivariate Cox###############
 
+## Univariate Cox p<0.05 and Multivariate Cox #################################
 ## step 1: p<0.05
 Uni_cox$Characteristics[Uni_cox$Uni_P<0.05]
 
 ## positive or negtivate
 Uni_cox$Characteristics[(Uni_cox$Uni_P<0.05) & (Uni_cox$coef <0)]    # 24
 Uni_cox$Characteristics[(Uni_cox$Uni_P<0.05) & (Uni_cox$coef >0)]    # 15
-
 
 ## step 2: construct Multivariate model
 mul_cox_model<- as.formula(paste0 ("y~",
@@ -305,7 +370,7 @@ mul_cox<-coxph(mul_cox_model,data=Data)
 cox4 <- summary(mul_cox) 
 coef <- cox4$coefficients[,c(1,5)]
 mul_coef <- coef[which(coef[,2] <= 0.05),1]
-View(mul_coef)
+# View(mul_coef)
 # write.csv(mul_coef, file = "TCGA_NEW/UniMutVariate_markergene.csv")
 
 ## step 3:
@@ -325,21 +390,11 @@ mul_cox1 <- data.frame("coef"=mul_corf, "mul_HR.CI95"=mul_HR.CI95,"P"=mul_PValue
 #mul_cox1<- data.frame("HR"=mul_HR,"mul_CI"=mul_CI, "P"=mul_PValue)
 
 
-################### Univariate and multivariate data integration ##############
-
-## step 1:
+## Step 3：Univariate & multivariate data integration ######################
 Uni_cox <- Uni_cox[,-1]
-
-## step 2:
 colnames(Uni_cox)[1] <- 'Characteristics'
-
-## step 3:
 mul_cox1 <- cbind(rownames(mul_cox1), mul_cox1, row.names=NULL); names(mul_cox1 )[1]<-"Characteristics"
-
-## step 4:
 table2 <- merge.data.frame(Uni_cox, mul_cox1, by="Characteristics", all = T, sort = T)
-
-## step 5:
 table3 <- table2[,c(1,2,4,3,5,6,7)]
 colnames(table3) <- c("Feature", "Coef_Uni", "HR(95%CI)_Uni", "P_Uni",
                       "Coef_Mul", "HR(95%CI)_Mul", "P_Mul")
@@ -347,29 +402,27 @@ View(table3)
 # write.csv(table3, file = "TCGA_NEW/UniMutVariate_Cox_Coef.csv",row.names = F)
 
 
-# ת??Ϊlatex ----------------------------------------------------------------
 library(stargazer)
 stargazer(table3, summary=FALSE, rownames=FALSE) 
-
 stargazer(table3[,], summary=FALSE, rownames=FALSE) 
 
 
-# Extract Drug Resistance data  -------------------------------------------
-
-
+##############################################################################
+# Figure 3F,G: Anthracycline-sensitive validation. 
+##############################################################################
+# Extract Drug Resistance data  ------------------------------------------------
 ResisDE <- read.csv("DrugRest/biomolecules-12-01834-s001/supplementary Table S2.csv", header = T, sep = ",")
-
 which(ResisDE$Genename %in% table3$Feature)
 markerDE <- ResisDE[which(ResisDE$Genename %in% table3$Feature),]
 which(markerDE$log2FC > 0)
-length(which(markerDE$log2FC > 0))
-length(which(markerDE$log2FC < 0))
+length(which(markerDE$log2FC > 0))    # 25
+length(which(markerDE$log2FC < 0))    # 43
 
 ## plot bar plot of p value
 markerFC <- markerDE[,c(1, 6)]
 markerFC$Genename
-which(markerFC$Genename == "RAD21")
-which(markerFC$Genename == "TNFSF11")
+which(markerFC$Genename == "RAD21")    # 65
+which(markerFC$Genename == "TNFSF11")  # 68
 markerP <- markerFC[c(which(markerFC$Genename == "RAD21"),which(markerFC$Genename == "TNFSF11")),]
 colnames(markerP) <- c("Gene", "P")
 
@@ -379,7 +432,7 @@ p4 <- ggplot(data = markerP, aes(x = P, y = Gene)) +
   geom_col(aes(fill = P > 0), color = "gray") +
   scale_fill_manual(values = c("#d5d9e0", "#a4afd5")) +
   # scale_x_continuous(limits = c(-0.2, 0.3), expand = c(0, 0)) +
-  ## The x-axis and y-axis swap positions
+  ## change x and y axies
   # coord_flip()+
   # theme_classic() +
   theme_minimal() +
@@ -396,16 +449,11 @@ p4 <- ggplot(data = markerP, aes(x = P, y = Gene)) +
         plot.subtitle = element_text(size = 16),
         plot.caption = element_text(size = 12, hjust = 1, margin = margin(t = 10, r = 0, b = 0, l = 0)),
         plot.margin = margin(40, 40, 20, 20, "pt")) +
-  labs(# title = "Prognostic biomarkers",
-    # subtitle = "Prognostic biomarkers",
-    # caption = "Source: Generated by R"
-    x = "P value")
-
+  labs(x = "P value")
 
 # pdf("DrugRest/DistribP.pdf",width = 4, height = 5)
-# p4
+p4
 # dev.off()
-
 
 
 ## plot bar plot of LogFC
@@ -419,41 +467,30 @@ markerFC <- markerFC[,c(1,3,2)]
 colnames(markerFC) <- c("Gene", "variable", "value" )
 markerFC$value <- round(markerFC$value, 3)
 
-
-
 library(ggplot2)
 library(reshape2)
 df <- markerFC
-# df <- melt(df)   
-
 p<- ggplot(df, aes(
-  ## Convert first column to a factor so that the display order is the same as the file order, otherwise sort in alphabetical order
   x = factor(Gene,levels = unique(Gene)),   
-  ## Determine the grouping situation and draw two columns on both sides of 0
   y = ifelse(variable == "variable", -value, value),  
   fill = variable)) +
-  ## Draw a column chart
   geom_bar(stat = 'identity')+   
-  ## The x-axis and y-axis swap positions
   coord_flip()+
-  ## Add numeric labels to graphs
   geom_text(                                                  
     aes(label=value, 
         hjust = ifelse(variable == "variable", -0.4, 1.1)),size=2) +
-  ## Adjust the y-axis，set the scale to absolute values
-  # scale_y_continuous(labels = abs, expand = expansion(mult = c(0.1, 0.1)))+                
   scale_fill_manual(values = c('#fec79e','#8ec4cb'))+
   labs(x='Gene',y='Log2FC') +
-  ## Leave some blank space on both sides of the y-axis to prevent incomplete display when adding labels
   theme_test(base_size = 10) 
 
-p
 # pdf("DrugRest/DistribLogFC.pdf", width = 5, height = 8)
-# p
+p
 # dev.off()
 
 
-
+##############################################################################
+# Figure 4B: Internal validation result using six-gene PRS
+##############################################################################
 # Extract PRS data and label -------------------------------------------
 data = read.table("TCGA_NEW/TCGA_BRCA_clin_546_1080_scale.txt", header = T, check.names = FALSE)
 # data = read.table("TCGA_NEW/TCGA_BRCA_clin_546_1080.txt", header = T, check.names = FALSE)
@@ -466,70 +503,44 @@ y <- as.matrix(datat[,c(1,2)])
 colnames(y) <- c("time", "status")
 y_hat <- data.frame(y)
 
-
 # coef_gene <- read.csv("TCGA_NEW/UniMutVariate_Cox_Coef.csv", header = T, sep=',')
 coef_gene <- read.csv("TCGA_NEW/UniMutVariate_markergene.csv", header = T, sep=',')
 coef <- as.matrix(coef_gene[,2])
 rownames(coef) <- coef_gene[,1]
 
 
-# my_overlap_coef ------------------------------------------------------
-my_overlap <- function(x, y){
-  
-  coefs.v <- x[,1] %>% { .[. != 0]}
-  coefs.v %>% {
-    data.frame(gene.name   = names(.),
-               coefficient = .,
-               stringsAsFactors = FALSE)
-  } %>%
-    arrange(gene.name) %>%
-    knitr::kable()
-  
-  sele <- rownames(as.matrix(coefs.v))
-  gene <- rownames(y)[-c(1,2)]
-  overlap <- intersect(sele, gene)
-  
-  lab <- x[,1] %>% { .[. != 0]} %>% as.matrix
-  coefs.v <- lab[overlap,]
-  
-  my <- list(coefs.v, overlap)
-  return(my)
-} 
-
-
-# ??ͼ ----------------------------------------------------------------------
+##############################################################################
+# Calculating riskscore using separate2GroupsCox
+##############################################################################
+# Load function -------------------------------------------------------------
 source(paste(path, 'CNetCox/R/myoverlap_separate2GroupsCox.R', sep=''))
-
-
 library(ggpubr)
 library(magrittr)
 library(survminer)
 
 coef_test <- my_overlap(coef, Data)
 plotp_Train <- separate2GroupsCox(as.vector(coef_test[[1]]), x_hat[, coef_test[[2]]], 
-                                  plot.title = 'GSE1456_smfs', as.data.frame(y), 
+                                  plot.title = 'TCGA_OS_PRS_gene', as.data.frame(y), 
                                   legend.outside = T)
 plot_train <- plotp_Train$plot
-
-
+plot_train
 
 ## for Xtile
 p_index <- cbind(y,plotp_Train$index)
 colnames(p_index) <- c(colnames(y), "riskscore")
+# write.table(p_index, file = "TCGA_NEW/TCGA_OS_PRS_gene_scale.txt", quote = F, row.names = F, sep="\t")
 # write.table(p_index, file = "TCGA_NEW/TCGA_OS_PRS_gene.txt", quote = F, row.names = F, sep="\t")
 # write.table(p_index, file = "TCGA_NEW/TCGA_OS_PRS_gene.csv", quote = F, row.names = F)
-# write.table(p_index, file = "TCGA_NEW/TCGA_OS_PRS_gene_scale.txt", quote = F, row.names = F, sep="\t")
 # write.table(p_index, file = "TCGA_NEW/TCGA_OS_PRS_gene_scale.csv", quote = F, row.names = F)
 
 
-
-# Extract features on TCGA --------------------------------------------------------------
-
+##############################################################################
+# Figure 4B
+##############################################################################
+# Extract features on TCGA --------------------------------------------------
 library(survminer)
 library(survival)
 library(ggplot2)
-
-
 # data = read.table("TCGA_NEW/TCGA_OS_PRS_gene.txt", header = T, check.names = FALSE)
 data = read.table("TCGA_NEW/TCGA_OS_PRS_gene_scale.txt", header = T, check.names = FALSE)
 
@@ -539,8 +550,10 @@ exprSet <- as.data.frame(t(data))
 ## Set cutoff value  
 alpha <- 0.75 # (928/1080)
 risk_score  <- t(as.matrix(exprSet[gene_name,]))
-cut_off <- rep(as.numeric(quantile(exprSet[gene_name,],alpha)), dim(exprSet)[2])
-
+## This row: Error in xtfrm.data.frame(x) : cannot xtfrm data frames (26/01/16)
+# cut_off <- rep(as.numeric(quantile(exprSet[gene_name,],alpha)), dim(exprSet)[2])
+exprSet <- as.matrix(exprSet)
+cut_off <- rep(as.numeric(quantile(exprSet[gene_name, ], alpha)), ncol(exprSet))
 
 data$time <- data$time/365
 data$riskscore <- ifelse(risk_score > cut_off, 'high','low')
@@ -556,13 +569,13 @@ p <- ggsurvplot(fit, data = data,
                 cumcensor = T,   
                 legend = c(0.83,0.95),
                 
-                # P value
+                ## P value
                 pval = TRUE, 
                 pval.size=6, 
                 font.pval= c(14, "bold", "black"),
                 pval.coord = c(0.00, 0.05),
                 
-                # legend
+                ## legend
                 legend.title = '', # gene_name
                 legend.labs=c("High risk", "Low risk"), 
                 font.legend= c(14, "plain", "black"), 
@@ -575,12 +588,10 @@ p <- ggsurvplot(fit, data = data,
                 font.tickslab = c(14, "plain", "black"),
                 xlab = "Time in years", 
                 break.time.by = 6
-) # break X axis in time intervals by 500.
+)  
 p
 
-
-# ????HR??CI
-
+## add HR and CI
 res_cox <- coxph(Surv(time, status) ~riskscore, data=data)
 HR <- round(summary(res_cox)$conf.int[1],2)
 ci_l <- round(summary(res_cox)$conf.int[3],2)
@@ -597,20 +608,19 @@ p1
 # dev.off()
 
 
+##############################################################################
+# Try to plot ROC curves (DONT used in CNet-Cox v1)
+##############################################################################
 # Extract PRS gene expression and PRS value -------------------------------
-
 library(dplyr)        
 library(tidyr)
 library(tidyverse)   
 
 # Data1 = read.table("TCGA_NEW/TCGA_BRCA_clin_546_1080.txt", header = T, check.names = FALSE)
 Data1 = read.table("TCGA_NEW/TCGA_BRCA_clin_546_1080_scale.txt", header = T, check.names = FALSE)
-
 # View(Data1[,1:10])
-
 coef_gene <- read.csv("TCGA_NEW/UniMutVariate_markergene.csv", header = T, sep=',')
 gene <- as.matrix(coef_gene[,1])
-
 colnames(gene) <- c('gene')
 Data2 <- cbind(rownames(Data1), Data1)
 colnames(Data2) <- c('gene', colnames(Data1))
@@ -628,8 +638,66 @@ genedata2 <- rbind(Data1[c(1,2),],genedata1)    # 55
 
 
 
-# Extract PRS gene expression of P/M GSE147995 data-------------------------------
+##############################################################################
+# Figure Sx in revision
+##############################################################################
+# Plot KM curves of each gene ---------------------------------------------
+library(survival)
+library(survminer)
 
+# Convert data: genedata2 should be a matrix; transpose to get samples as rows
+genedata2 <- as.matrix(genedata2)
+genedata3 <- as.data.frame(t(genedata2))
+genedata3$time <- as.numeric(genedata3$time) / 365   # Convert time to years
+genedata3$status <- as.numeric(genedata3$status)     # Ensure status is numeric
+
+# Set quantile cutoff
+alpha <- 0.75 # (928/1080)
+gene_list <- c("EGR1", "IGFBP5", "JUN", "MAFK", "MYC", "TCF7")
+plot_list <- list()
+
+# Loop through each gene and generate survival plots
+for (gene in gene_list) {
+  gene_expr <- as.numeric(genedata3[[gene]])
+  cut_off <- as.numeric(quantile(gene_expr, alpha, na.rm = TRUE))
+  
+  # Group samples by expression level
+  genedata3[[paste0(gene, "_group")]] <- ifelse(gene_expr > cut_off, "high", "low")
+  
+  # Fit survival curve
+  fit <- survfit(Surv(time, status) ~ genedata3[[paste0(gene, "_group")]], data = genedata3)
+  
+  # Create survival plot (without risk table for compact display)
+  p <- ggsurvplot(
+    fit,
+    data = genedata3,
+    conf.int = FALSE,
+    risk.table = TRUE,      # Hide risk table for multi-panel plot
+    cumcensor = FALSE,
+    legend.title = gene,
+    legend.labs = c("High", "Low"),
+    palette = c("red", "blue"),
+    font.legend = c(12, "plain", "black"),
+    font.x = c(12, "plain", "black"),
+    font.y = c(12, "plain", "black"),
+    font.tickslab = c(10, "plain", "black"),
+    xlab = "Years",
+    break.time.by = 6,
+    pval = TRUE,
+    pval.size = 4,
+    font.pval = c(10, "bold", "black")
+  )
+
+  plot_list[[gene]] <- p
+}
+
+# pdf("TCGA_NEW/TCGA_6_os_gene.pdf", width = 14, height = 10, onefile = FALSE)
+arrange_ggsurvplots(plot_list, nrow = 2, ncol = 3)
+# dev.off()
+
+
+
+# Extract PRS gene expression of P/M GSE147995 data-------------------------------
 library(dplyr)       
 library(tidyr)
 library(tidyverse)   
@@ -663,19 +731,14 @@ genedata1ER_mini <- genedata1[,-c(c(1,11,13,19,21,23), c(1,11,13,19,21,23)+1)]
 # write.table(genedata1ER_mini,"DrugData/GSE147995_PRS_Expr_mini.txt",quote=F,sep="\t")
 
 
-
-# ??????TCGA?õ???PRSָ?? ----------------------------------------------------------------
-
-
+# TCGA of PRS ----------------------------------------------------------------
 # data = read.table("TCGA_NEW/TCGA_PRS_Expr.txt", header = T, check.names = FALSE)
 data = read.table("TCGA_NEW/TCGA_PRS_Expr_scale.txt", header = T, check.names = FALSE)
 datat <- as.data.frame(t(data))
 prs = read.table("TCGA_NEW/TCGA_OS_PRS_gene.txt", header = T, check.names = FALSE)
-
 datat$PRS <- prs$riskscore
 
 data1 <- datat[,c(1,2,9,3,4,5,6,7,8)]
-
 # write.table(data1, file = "TCGA_NEW/TCGA_prs_for_hiplot.txt", quote=F,sep="\t",row.names = F)  
 
 
@@ -683,8 +746,6 @@ data1 <- datat[,c(1,2,9,3,4,5,6,7,8)]
 ## https://mp.weixin.qq.com/s/6TLqj6i-T3Ps9Rs7YKeL3A
 
 library(survivalROC)
-
-# td <- as.data.frame(cbind(colnames(data),t(data)))
 ## add PRS score
 td <- as.data.frame(cbind(colnames(data), data1))
 td <- cbind(colnames(data), as.data.frame(apply(td[,2:dim(td)[2]], 2, as.numeric) ))
@@ -693,14 +754,14 @@ colnames(td) <- c("id", colnames(data1)[-3], colnames(data1)[3])
 # td <- datat[,c(2,1,3,4,5,6,7,8)]
 
 ## plot one gene as one time point
-# par(mar= c(5,5,1,1),cex.lab=1.2,cex.axis= 1.2)  
-# sROC <- survivalROC(Stime=td$time,  
-#                  status=td$status,  
-#                  marker = td$EGR1,  
-#                  predict.time =5,  
+# par(mar= c(5,5,1,1),cex.lab=1.2,cex.axis= 1.2) #先设置一下图形的边界
+# sROC <- survivalROC(Stime=td$time, # 生存时间
+#                  status=td$status, # 生存状态
+#                  marker = td$EGR1, #选择gene87
+#                  predict.time =5,  # 看5年的时间段
 #                  method="KM")
 # sROC
-# plot(sROC$FP, sROC$TP, type="l", xlim=c(0,1), ylim=c(0,1),col="red", 
+# plot(sROC$FP, sROC$TP, type="l", xlim=c(0,1), ylim=c(0,1),col="red",
 #      xlab="False positive rate", ylab="True positive rate",
 #      lwd = 2, cex.main=1.3, cex.lab=1.5, cex.axis=1.2, font=1.2)
 # 
@@ -716,20 +777,19 @@ library(survival)
 tRocFuction=function(td=null,gene=null){
   tROC <-timeROC(T=td$time, delta = td$status, marker = gene,
                  cause = 1,times = c(1,3,5),ROC=T)
-  par(mar= c(4.5,4.5,1,1), cex.lab=1.5, cex.axis= 1.2)  
-  plot(tROC,time=1,col="red",title=F, lwd=3)  
+  par(mar= c(4.5,4.5,1,1), cex.lab=1.5, cex.axis= 1.2) #cex.lab=2横纵坐标的label变大，cex.axis=1.5坐标刻度数字变大
+  plot(tROC,time=1,col="red",title=F, lwd=3) # lwd 线的粗线
   plot(tROC,time=3,col="green",add=T,title=F,lwd=3)
   plot(tROC,time=5,col="blue",add=T,title=F,lwd=3)
-  legend(0.3,0.6,     # Change the legend coordinate position
+  legend(0.3,0.6, # 改变legend坐标位置
          # c(paste0("AUC at 1 years  ", round(tROC$AUC[1], 2)),
          #   paste0("AUC at 3 years  ", round(tROC$AUC[2], 2)),
          #   paste0("AUC at 5 years  ", round(tROC$AUC[3], 2))),
          c(paste0("AUC", round(tROC$AUC[1], 2)),
            paste0("AUC", round(tROC$AUC[2], 2)),
            paste0("AUC", round(tROC$AUC[3], 2))),
-         col=c("red","green","blue"), lwd=2, cex=1.2, bty="n")  
+         col=c("red","green","blue"), lwd=2, cex=1.2, bty="n") # 改变legend粗细及大小 lwd=2,cex=1.5
 }
-
 
 ## save plot
 # pdf(file="gene87.sROC.pdf",width=6,height=5)  
@@ -739,7 +799,6 @@ tRocFuction(td=td,gene=td$IGFBP5)
 
 ## save on a list
 TimeROC <- list()
-
 par(mfrow=c(3,3))
 TimeROC[[1]] <- tRocFuction(td=td,gene=td$EGR1)  
 TimeROC[[2]] <- tRocFuction(td=td,gene= - td$IGFBP5)  
@@ -763,16 +822,12 @@ par(mfrow=c(1,1))
 
 # ROC: Six gene at  single time point ----------------------------------
 ## https://mp.weixin.qq.com/s/eqw9ooOLcaFQUdh06jHQww
-
-
 rbCol=rainbow(6)
-
-
-mRocFuction=function(td=null,pt = null,of=null){  
+mRocFuction=function(td=null,pt = null,of=null){ #td要使用的数据名，pt要看的时间段
   rbCol=rainbow(6)
   par(mar= c(4.5, 4.5, 1,1),cex.lab=1.2,cex.axis= 1.2)
   sROC=survivalROC(Stime=td$time, status = td$status, marker = td$EGR1,
-                   predict.time = pt,  
+                   predict.time = pt, #时间改为pt，方便改要看的时间段
                    method="KM")
   plot(sROC$FP, sROC$TP, type="l", xlim=c(0,1), ylim=c(0,1),col=rbCol[1], 
        xlab="False positive rate", ylab="True positive rate",
@@ -786,15 +841,14 @@ mRocFuction=function(td=null,pt = null,of=null){
     lines(sROC$FP, sROC$TP, type="l", xlim=c(0,1), ylim=c(0,1),col = rbCol[j],lwd = 2)
     aucText=c(aucText,paste0(i," (AUC=",sprintf("%.3f",sROC$AUC),")"))
   }
-  legend("bottomright", aucText,lwd=2,bty="n",cex = 1.2,col=rbCol)  
-  legend("topleft", paste(pt,"Years"),bty="n",cex = 1.8)  
+  legend("bottomright", aucText,lwd=2,bty="n",cex = 1.2,col=rbCol) # cex改为1.2倍字体
+  legend("topleft", paste(pt,"Years"),bty="n",cex = 1.8) # 加了一个时间点的legend
   
 }
 
-
-## #The last td is changed to the data name to be viewed, pt is the time period to be viewed, 3 years
+## The second 'td' should be replaced with the name of the data you want to view, 
+## and 'pt' should be the time period you want to view, which is 3 years.
 mRocFuction(td=td, pt=3, of=c("IGFBP5","JUN","MAFK","MYC","TCF7")) 
-
 
 ## save on a list
 par(mfrow=c(2,2))
@@ -802,3 +856,72 @@ mRocFuction(td=td, pt=1, of=c("IGFBP5","JUN","MAFK","MYC","TCF7"))
 mRocFuction(td=td, pt=3, of=c("IGFBP5","JUN","MAFK","MYC","TCF7")) 
 mRocFuction(td=td, pt=5, of=c("IGFBP5","JUN","MAFK","MYC","TCF7")) 
 par(mfrow=c(1,1))
+
+
+
+##############################################################################
+# For revision v1  2026.01.16
+##############################################################################
+# Validation of oncotype21 and mamamprint70 -------------------------------
+
+## Load data
+DX21gene  <- read.csv("Prior_Infor/OncotypeDX21gene.csv", header = T, sep=',')
+DX21gene <- DX21gene[,1]
+mamaprint <- read.csv("Prior_Infor/70_mama.csv", header = T, sep=',')
+mamaprint <- mamaprint[,1]
+cnnetcox <- as.matrix(read.csv("Result/Result3/marker3.csv", header = T, sep=','))
+cnnetcox <- cnnetcox[,1]
+prs_gene <- read.csv("TCGA_NEW/UniMutVariate_markergene.csv", header = T, sep=',')
+prs_gene <- prs_gene[,1]
+
+## Venn plot
+# install.packages("ggVennDiagram")
+library(ggVennDiagram)
+
+## All
+gene_list <- list(
+  `Oncotype DX 21` = DX21gene,
+  `MammaPrint 70` = mamaprint,
+  `CNet-Cox` = cnnetcox
+)
+
+p <- ggVennDiagram(gene_list, 
+                   label_alpha = 0, 
+                   label_size = 5,
+                   edge_size = 0.8,
+                   set_color = c("#377eb8", "#4daf4a", "#e41a1c"),
+                   category.names = names(gene_list)) +
+  scale_fill_gradient(low = "#FFFFFF", high = "#FFB6B6") +   
+  theme_void(base_size = 15) +
+  theme(legend.position = "none", 
+        text = element_text(family = "Helvetica")) 
+p
+# ggsave("TCGA_NEW/venn_compare.pdf", p, width = 4, height = 4)
+
+
+## PRS
+gene_list <- list(
+  `Oncotype DX 21` = DX21gene,
+  `MammaPrint 70` = mamaprint,
+  `PRS score` = prs_gene
+)
+
+p <- ggVennDiagram(gene_list, 
+                   label_alpha = 0, 
+                   label_size = 5,
+                   edge_size = 0.8,
+                   set_color = c("#377eb8", "#4daf4a", "#e41a1c"),
+                   category.names = names(gene_list)) +
+  scale_fill_gradient(low = "#FFFFFF", high = "#FFB6B6") +   
+  theme_void(base_size = 15) +
+  theme(legend.position = "none", 
+        text = element_text(family = "Helvetica"))  
+p
+# ggsave("TCGA_NEW/venn_compare_prs.pdf", p, width = 4, height = 4)
+
+
+intersect(DX21gene, mamaprint)
+intersect(mamaprint, cnnetcox)     # "BBC3"   "EGLN1"  "IGFBP5" "RASSF7" "RECQL5"
+intersect(mamaprint, prs_gene)     # IGFBP5
+Reduce(intersect, list(DX21gene, mamaprint, cnnetcox)) 
+

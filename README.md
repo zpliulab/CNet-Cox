@@ -1,4 +1,4 @@
-# [Machine learning-driven network biomarker discovery and risk scoring system construction for breast cancer prognosis](https://github.com/zpliulab/CNet-Cox)
+# [CNet-Cox for interpretable network biomarker discovery and survival risk scoring in precise breast cancer prognosis](https://github.com/zpliulab/CNet-Cox)
 
 <!-- CNet-Cox: Network prognostic biomarkers identification by Cox proportional hazards model with connectivity network-regularized constraints -->
 
@@ -15,8 +15,8 @@
 
 
 ## Citation
-Lingyu Li, Wai-Ki Ching and Zhi-Ping Liu*. "**Machine learning-driven network biomarker discovery and risk scoring system construction for breast cancer prognosis**." Submited to [npj Digital Medicine](https://www.nature.com/npjdigitalmed/).
-<!-- [Expert Systems with Applications](https://www.journals.elsevier.com/expert-systems-with-applications/).   -->
+Lingyu Li, Weiqin Zhao, Qingpeng Zhang, Wai-Ki Ching* and Zhi-Ping Liu*. "**CNet-Cox for interpretable network biomarker discovery and survival risk scoring in precise breast cancer prognosis**." Submited to [npj Digital Medicine](https://www.nature.com/npjdigitalmed/).
+
 
 ## R packages
 * [glmSparseNet](https://bioconductor.org/packages/release/bioc/html/glmSparseNet.html) (v1.8.1). 
@@ -24,36 +24,54 @@ Lingyu Li, Wai-Ki Ching and Zhi-Ping Liu*. "**Machine learning-driven network bi
 * [TCGAutils](https://bioconductor.org/packages/release/bioc/html/TCGAutils.html) (v1.10.1). 
 * [dplyr](https://cran.r-project.org/web/packages/dtplyr/index.html) (v1.0.8). 
 * [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html) (v1.30.1). 
+* [igraph](https://cran.r-project.org/web/packages/igraph/index.html) (v2.1.4). 
+* [caret](https://cran.r-project.org/web/packages/caret/index.html) (v7.0-1). 
+* [dplyr](https://cran.r-project.org/web/packages/dtplyr/index.html) (v1.3.1). 
+* [tidyverse](https://cran.r-project.org/web/packages/tidyverse/index.html) (v2.0.0). 
+* [rlang](https://cran.r-project.org/web/packages/rlang/index.html) (v1.1.6). 
+* [survival](https://cran.r-project.org/web/packages/survival/index.html) (v3.8.3). 
+* [glmSparseNet](https://bioconductor.org/packages/release/bioc/html/glmSparseNet.html) (v1.8.6). 
+* [survminer](https://cran.r-project.org/web/packages/survminer/index.html) (v0.5.0). 
+* [litedown](https://cran.r-project.org/web/packages/litedown/index.html) (v0.7). 
+
 
 ## Data
 <!--START_SECTION:news-->
 * **Code** provides all **R/Matlab/Python** scripts required to reproduce and utilize **CNet-Cox**. 
-* **Data** gives necessary input/output files by the **R/Matlab/Python** codes. *Note: Some input files only give the first few lines due to upload size limitation, but this does not affect the results of **CNet-Cox**.*
+* **Data** gives necessary input/output files by the **R/Matlab/Python** codes. *Note: Some input files only give the first few lines due to upload size limitation, but this does not affect the results of **CNet-Cox**.* Especially, *Independent_data* and *Feature_data* are two files (original expression and PRS gene expression) from independent GEO datasets (See ``feature_select_GEO.R``).
 * **Supp** presents additional supporting files that contained in **CNet-Cox**. 
 * **Validation** provides the original supporting files (high-resolution images) used for validating the PRS genes induced by **CNet-Cox** for breast cancer. 
 <!--END_SECTION:news-->
 
 
 ## R codes for Data 
-The **serial number (1), (2), ..., (16)** represents the order in which the program runs in our work. 
+The **number (1), (2), ...** represents the order in which the Sript runs in CNet-Cox. 
 <!--START_SECTION:news-->
-* (1) ``TCGA_pro_clin_DE.R``  --  Get data of all samples, select 112 Tumor + 112 Normal samples to and get DEGs.
-* (2) ``thetaSelectGEDFN.R``  --  Use GCWs method get top 1% genes, repeat 10 times, make union.
-* (3) ``malacards_GEDFN_mamaprint_KEGG.R``  --  Integrate data from MalaCards, KEGG, Mamaprint, GCWs, DEGs to union gene and corresponding expression data.
-* (4) ``network_match_union.R``  --  Get the network of union gene in RegNetwork, extract the expression data of TCGA corresponding to union gene, and scale them.
-* (5) ``data_splitnew.R``  --  According to the random seeds of other methods, the scaled data of the union gene of TCGA is divided into training data and testing data.
-* (6) ``adj_union.R`` ---- Adjacency matrix and its eigenvalues.
-* (7) ``cut_union.R`` ---- Diameters and cut-nodes of component of DEGs in RegNetwork.
+* (1) ``TCGA_pro_clin_DE.R``  --  Download gene expression datat of BRCA samples with clinical information, select  928 "surviving" + 152 "deceased" samples to get 196 DEGs and make Volcano plot (Fig. 2A), and integrate DEGs with prior knowledges, select component and node-cut set.
+* (2) ``Data_split.R``  --  According to the random seeds of other methods, the scaled data of the union gene of TCGA is divided into training data and testing data.
+* (3) ``TCGA_pro_clin_Cox_544_rep5.R``  --  Run compared methods (ENet-Cox, L0-Cox, L1/2-Cox, Lasso-Cox, MCP-Cox, SCAD-Cox), with **input** 'TCGA_BRCA_clin_546_1080.txt'.
+```bash
+library(curatedTCGAData)
+brca <- curatedTCGAData(diseaseCode = "BRCA", assays = "RNASeq2GeneNorm", version = "1.1.38", dry.run = FALSE)
+```
 <!--END_SECTION:news-->
 
 
 ## R codes for Result 
-The **serial number (1), (2), ..., (4)** represents the order in which the program runs in our work. 
+The **number (0), (1), ...** represents the order in which the program runs in our work. 
 <!--START_SECTION:news-->
-* (1) ``feature_select_all_new.R`` -- Extract the common genes of TCGA and GEO, using the identified 32 genes. 
-* (2) ``class_net_Cox.R`` -- Train on TCGA data, predict on GEO data, apply linear Cox classifier for classification, observe results.
-* (3) ``network_match_all_new.R`` -- Extract the net information of the biomarkers identified by each method.
-* (4) ``ROCplot.R`` -- Plot ROC curves on independent datasets.
+* (0) ``CI_repeat.R`` and ``myoverlap_separate2GroupsCox.R`` -- The core function used in the subsequent analysis scripts. 
+* (1) ``CI_repeat.R`` -- Feature network of CNet-Cox (Fig. 2B); Survival analysis of 68 prognostic  markers (Fig. 2G); Univariate and multivariate Cox analysis (Tab. S4); Anthracycline-sensitive validation (Fig. 3F,G); Internal validation using six-gene PRS (Fig. 4B); Overlap of oncotype21 and mamamprint70 (Fig. Sx).
+* (2) ``feature_select_GEO.R`` -- Select expression of six genes in PRS (with time and clinical information; [8*159]) from external GEO datasets. **Input**: Data/Independent_data. **Output**: Data/Feature_data/Data_GEO.
+* (3) ``feature_survival_external_index.R`` -- Calculate PRS values based on PRS in Eq. (1) on external GEO datasets (from *feature_select_GEO.R*). 
+* (4) ``GSE96058_expr.R``  --  [For revision] External validation using new breast cancer subtype dataset, CNet-Cox gets good prognostic risk prediction using PRS index for ER+ and TNBC patients. 
+* (5) ``CNet_robust_revision.R`` -- [For revision] Demonstrate the robustness of CNet-Cox. This script calculates the C-index of CNet-Cox across four independent 10-fold cross-validations (results are available in *CNetCoxComResults.xlsx*) and visualizes the overlap among selected features in these runs (Fig. S2).
+* (6) ``GSE20711_expr.R`` -- Pro-process the GEO dataset (*GSE20711_series_matrix.txt*) and extract clinical information (*GSE20711_scale_outcome_os.txt*) 
+* (7) ``feature_select_GSE20711.R`` -- Extracts six gene expression values from the preprocessed GEO dataset, calculates the PRS score, and plots a boxplot comparing PRS scores between tumor and normal samples (followed by ``GSE20711_expr.R``). [Also fit for ``feature_select_GSE42568.R``. Could omitted, don't used in this work.]
+* (8) ``TCGA_pro_clin_nomogram.R`` -- Used to count the clinical information of TCGA (Fig. C-D).
+* (9) ``Box_sim.R`` -- isualize the Metascope results of the functional enrichment analysis from *CNet/all.tk57fofgx/Enrichment_GO* (Fig. 3A,B).
+* (10) ``Box_sim_cluster.R`` -- Plot SS-measure figure according to function enrichment analysis (Fig. 3C,D,E).
+* (11) ``Bar_BoublePlot.R`` -- Plots the double y-axis figure comparing feature selection methods based on C-index and number of selected features (Fig. 2F).
 <!--END_SECTION:news-->
 
 
