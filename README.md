@@ -10,12 +10,12 @@
 * A **C**nnected **Net**work-regularized **Cox** roportional hazards model (**CNet-Cox**) is proposed to perform **feature selection**. 
 * In real-world **breast cancer (BRCA) dataset**, we validated the CNet-Cox model is efficient to identify the **connected-network-structured features** that can serve as **prognostic biomarkers**.
 * In the comparison study, we also proved the proposed **CNet-Cox** results in better classification performance and feature interpretability than other seven method named **ENet-Cox**, **Lasso-Cox**, **L0-Cox**, **L1/2-Cox**, **SCAD-Cox**, **MCP-Cox** and **Ridge-Cox**.
-* If you have any questions about **CNet-Cox**, please directly contact the corresponding author [Prof. Zhi-Ping Liu](https://scholar.google.com/citations?user=zkBXb_kAAAAJ&hl=zh-CN&oi=ao) with the E-mail: zpliu@sdu.edu.cn
+* If you have any questions about **CNet-Cox**, please directly contact the last corresponding author [Prof. Zhi-Ping Liu](https://scholar.google.com/citations?user=zkBXb_kAAAAJ&hl=zh-CN&oi=ao) with the E-mail: zpliu@sdu.edu.cn
 <!--END_SECTION:news-->
 
 
 ## Citation
-Lingyu Li, Weiqin Zhao, Qingpeng Zhang, Wai-Ki Ching* and Zhi-Ping Liu*. "**CNet-Cox for interpretable network biomarker discovery and survival risk scoring in precise breast cancer prognosis**." Submited to [npj Digital Medicine](https://www.nature.com/npjdigitalmed/).
+Lingyu Li, Weiqin Zhao, Qingpeng Zhang, Wai-Ki Ching* and Zhi-Ping Liu*. "**CNet-Cox for interpretable network biomarker discovery and survival risk scoring in precise breast cancer prognosis**." Submited and Revised to [npj Digital Medicine](https://www.nature.com/npjdigitalmed/).
 
 
 ## R packages
@@ -60,8 +60,8 @@ brca <- curatedTCGAData(diseaseCode = "BRCA", assays = "RNASeq2GeneNorm", versio
 ## R codes for Result 
 The **number (0), (1), ...** represents the order in which the program runs in our work. 
 <!--START_SECTION:news-->
-* (0) ``CI_repeat.R`` and ``myoverlap_separate2GroupsCox.R`` -- The core function used in the subsequent analysis scripts. 
-* (1) ``CI_repeat.R`` -- Feature network of CNet-Cox (Fig. 2B); Survival analysis of 68 prognostic  markers (Fig. 2G); Univariate and multivariate Cox analysis (Tab. S4); Anthracycline-sensitive validation (Fig. 3F,G); Internal validation using six-gene PRS (Fig. 4B); Overlap of oncotype21 and mamamprint70 (Fig. Sx).
+* (0) ``MyFunctions.R`` and ``myoverlap_separate2GroupsCox.R`` -- The core function used in the subsequent analysis scripts. 
+* (1) ``CI_repeat.R`` -- Feature network of CNet-Cox (Fig. 2B); Survival analysis of 68 prognostic  markers (Fig. 2G); Univariate and multivariate Cox analysis (Tab. S4); Anthracycline-sensitive validation (Fig. 3F,G); Internal validation using six-gene PRS (Fig. 4B); Overlap of oncotype21 and mamamprint70 (Fig. 6G-H).
 * (2) ``feature_select_GEO.R`` -- Select expression of six genes in PRS (with time and clinical information; [8*159]) from external GEO datasets. **Input**: Data/Independent_data. **Output**: Data/Feature_data/Data_GEO.
 * (3) ``feature_survival_external_index.R`` -- Calculate PRS values based on PRS in Eq. (1) on external GEO datasets (from *feature_select_GEO.R*). 
 * (4) ``GSE96058_expr.R``  --  [For revision] External validation using new breast cancer subtype dataset, CNet-Cox gets good prognostic risk prediction using PRS index for ER+ and TNBC patients. 
@@ -114,5 +114,6 @@ matlab -r Coxmain.m
 ## Python codes
 <!--START_SECTION:news-->
 * (1) ``Fig1A_Radar_figure.ipynb`` -- Plot the radar figure.
-* (2) ``Spatial_validation_externaldata.ipynb`` -- Validate PRS gene on spatial dataset and compare PRS score with MammaPrint and OncotypeDX.
+* (2) ``Fig2_pvalue_simulation.ipynb`` -- Plot two differential gene with p values and simulation.
+* (3) ``Spatial_validation_externaldata.ipynb`` -- Validate PRS gene on spatial dataset and compare PRS score with MammaPrint and OncotypeDX.
 <!--END_SECTION:news-->
