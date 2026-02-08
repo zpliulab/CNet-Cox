@@ -68,7 +68,7 @@ The **number (0), (1), ...** represents the order in which the program runs in o
 * (5) ``CNet_robust_revision.R`` -- [For revision] Demonstrate the robustness of CNet-Cox. This script calculates the C-index of CNet-Cox across four independent 10-fold cross-validations (results are available in *CNetCoxComResults.xlsx*) and visualizes the overlap among selected features in these runs (Fig. S2).
 * (6) ``GSE20711_expr.R`` -- Pro-process the GEO dataset (*GSE20711_series_matrix.txt*) and extract clinical information (*GSE20711_scale_outcome_os.txt*) 
 * (7) ``feature_select_GSE20711.R`` -- Extracts six gene expression values from the preprocessed GEO dataset, calculates the PRS score, and plots a boxplot comparing PRS scores between tumor and normal samples (followed by ``GSE20711_expr.R``). [Also fit for ``feature_select_GSE42568.R``. Could omitted, don't used in this work.]
-* (8) ``TCGA_pro_clin_nomogram.R`` -- Used to count the clinical information of TCGA (Fig. C-D).
+* (8) ``TCGA_pro_clin_nomogram.R`` -- Used to count the clinical information of TCGA (Fig. 4C-D).
 * (9) ``Box_sim.R`` -- isualize the Metascope results of the functional enrichment analysis from *CNet/all.tk57fofgx/Enrichment_GO* (Fig. 3A,B).
 * (10) ``Box_sim_cluster.R`` -- Plot SS-measure figure according to function enrichment analysis (Fig. 3C,D,E).
 * (11) ``Bar_BoublePlot.R`` -- Plots the double y-axis figure comparing feature selection methods based on C-index and number of selected features (Fig. 2F).
