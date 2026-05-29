@@ -7,15 +7,15 @@
 
 ## CNet-Cox
 <!--START_SECTION:news-->
-* A **C**nnected **Net**work-regularized **Cox** roportional hazards model (**CNet-Cox**) is proposed to perform **feature selection**. 
+* A **C**onnected **Net**work-regularized **Cox** roportional hazards model (**CNet-Cox**) is proposed to perform **feature selection**. 
 * In real-world **breast cancer (BRCA) dataset**, we validated the CNet-Cox model is efficient to identify the **connected-network-structured features** that can serve as **prognostic biomarkers**.
 * In the comparison study, we also proved the proposed **CNet-Cox** results in better classification performance and feature interpretability than other seven method named **ENet-Cox**, **Lasso-Cox**, **L0-Cox**, **L1/2-Cox**, **SCAD-Cox**, **MCP-Cox** and **Ridge-Cox**.
-* If you have any questions about **CNet-Cox**, please directly contact the last corresponding author [Prof. Zhi-Ping Liu](https://scholar.google.com/citations?user=zkBXb_kAAAAJ&hl=zh-CN&oi=ao) with the E-mail: zpliu@sdu.edu.cn
+* If you have any questions about **CNet-Cox**, please directly contact the corresponding author [Prof. Zhi-Ping Liu](https://scholar.google.com/citations?user=zkBXb_kAAAAJ&hl=zh-CN&oi=ao) with the E-mail: zpliu AT sdu.edu.cn
 <!--END_SECTION:news-->
 
 
 ## Citation
-Lingyu Li, Weiqin Zhao, Qingpeng Zhang, Wai-Ki Ching* and Zhi-Ping Liu*. "**CNet-Cox for interpretable network biomarker discovery and survival risk scoring in precise breast cancer prognosis**." Submited and Revised to [npj Digital Medicine](https://www.nature.com/npjdigitalmed/).
+Lingyu Li, Weiqin Zhao, Qingpeng Zhang, Wai-Ki Ching and Zhi-Ping Liu. "**CNet-Cox for interpretable network biomarker discovery and survival risk scoring in precise breast cancer prognosis**." [npj Digital Medicine, 2026](https://www.nature.com/articles/s41746-026-02756-6).
 
 
 ## R packages
